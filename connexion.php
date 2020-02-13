@@ -41,7 +41,7 @@ if(isset($_POST['pseudo']) && isset($_POST['mdp'])) {
 			$_SESSION['membre']['pseudo'] = $infos['pseudo'];
 			$_SESSION['membre']['nom'] = $infos['nom'];
 			$_SESSION['membre']['prenom'] = $infos['prenom'];
-			$_SESSION['membre']['sexe'] = $infos['sexe'];
+			$_SESSION['membre']['civilite'] = $infos['civilite'];
 			$_SESSION['membre']['email'] = $infos['email'];
 			$_SESSION['membre']['ville'] = $infos['ville'];
 			$_SESSION['membre']['cp'] = $infos['cp'];

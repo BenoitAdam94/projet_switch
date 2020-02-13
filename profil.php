@@ -32,9 +32,9 @@ include 'inc/nav.inc.php';
 						<li class="list-group-item">Nom : <b><?php echo ucfirst($_SESSION['membre']['nom']); ?></b></li>
 						<li class="list-group-item">Prénom : <b><?php echo ucfirst($_SESSION['membre']['prenom']); ?></b></li>
 						<li class="list-group-item">Email : <b><?php echo $_SESSION['membre']['email']; ?></b></li>
-						<li class="list-group-item">Sexe : <b>
+						<li class="list-group-item">civilite : <b>
 						<?php 
-							if($_SESSION['membre']['sexe'] == 'm') {
+							if($_SESSION['membre']['civilite'] == 'm') {
 								echo 'Homme';
 							} else {
 								echo 'Femme';

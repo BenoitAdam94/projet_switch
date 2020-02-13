@@ -36,7 +36,7 @@ include 'inc/nav.inc.php';
 				<li class="list-group-item">Catégorie : <b><?php echo $article['categorie']; ?></b></li>
 				<li class="list-group-item">Couleur : <b><?php echo $article['couleur']; ?></b></li>
 				<li class="list-group-item">Taille : <b><?php echo $article['taille']; ?></b></li>
-				<li class="list-group-item">Sexe : <b><?php echo $article['sexe']; ?></b></li>
+				<li class="list-group-item">civilite : <b><?php echo $article['civilite']; ?></b></li>
 				
 				<?php if($article['stock'] > 0) { ?>
 				

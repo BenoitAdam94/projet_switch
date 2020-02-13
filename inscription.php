@@ -15,7 +15,7 @@ $mdp = '';
 $prenom = '';
 $nom = '';
 $email = '';
-$sexe = '';
+$civilite = '';
 $ville = '';
 $cp = '';
 $adresse = '';
@@ -26,7 +26,7 @@ if(
 	isset($_POST['prenom']) && 
 	isset($_POST['nom']) && 
 	isset($_POST['email']) && 
-	isset($_POST['sexe']) && 
+	isset($_POST['civilite']) && 
 	isset($_POST['ville']) && 
 	isset($_POST['cp']) && 
 	isset($_POST['adresse'])) {
@@ -37,7 +37,7 @@ if(
 		$prenom = trim($_POST['prenom']);
 		$nom = trim($_POST['nom']);
 		$email = trim($_POST['email']);
-		$sexe = trim($_POST['sexe']);
+		$civilite = trim($_POST['civilite']);
 		$ville = trim($_POST['ville']);
 		$cp = trim($_POST['cp']);
 		$adresse = trim($_POST['adresse']);
@@ -88,13 +88,13 @@ if(
 				$mdp = password_hash($mdp, PASSWORD_DEFAULT);
 				
 				// On déclenche l'insertion
-				$enregistrement = $pdo->prepare("INSERT INTO membre (id_membre, pseudo, mdp, nom, prenom, email, sexe, ville, cp, adresse, statut) VALUES (NULL, :pseudo, :mdp, :nom, :prenom, :email, :sexe, :ville, :cp, :adresse, 1)");
+				$enregistrement = $pdo->prepare("INSERT INTO membre (id_membre, pseudo, mdp, nom, prenom, email, civilite, ville, cp, adresse, statut) VALUES (NULL, :pseudo, :mdp, :nom, :prenom, :email, :civilite, :ville, :cp, :adresse, 1)");
 				$enregistrement->bindParam(':pseudo', $pseudo, PDO::PARAM_STR);
 				$enregistrement->bindParam(':mdp', $mdp, PDO::PARAM_STR);
 				$enregistrement->bindParam(':nom', $nom, PDO::PARAM_STR);
 				$enregistrement->bindParam(':prenom', $prenom, PDO::PARAM_STR);
 				$enregistrement->bindParam(':email', $email, PDO::PARAM_STR);
-				$enregistrement->bindParam(':sexe', $sexe, PDO::PARAM_STR);
+				$enregistrement->bindParam(':civilite', $civilite, PDO::PARAM_STR);
 				$enregistrement->bindParam(':ville', $ville, PDO::PARAM_STR);
 				$enregistrement->bindParam(':cp', $cp, PDO::PARAM_STR);
 				$enregistrement->bindParam(':adresse', $adresse, PDO::PARAM_STR);
@@ -159,10 +159,10 @@ include 'inc/nav.inc.php';
 					<div class="col-6">
 					
 <div class="form-group">
-	<label for="sexe">Sexe</label>
-	<select name="sexe" id="sexe" class="form-control">
+	<label for="civilite">civilite</label>
+	<select name="civilite" id="civilite" class="form-control">
 		<option value="m">Homme</option>
-		<option value="f" <?php if($sexe == 'f') { echo 'selected'; } ?> >Femme</option>
+		<option value="f" <?php if($civilite == 'f') { echo 'selected'; } ?> >Femme</option>
 	</select>
 </div>
 <div class="form-group">

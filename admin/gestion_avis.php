@@ -34,7 +34,7 @@ $titre = "";
 $categorie = "";
 $couleur = "";
 $taille = "";
-$sexe = "";
+$civilite = "";
 $photo_bdd = "";
 $prix = "";
 $stock = "";
@@ -55,7 +55,7 @@ if(
 	isset($_POST['categorie']) &&
 	isset($_POST['couleur']) &&
 	isset($_POST['taille']) &&
-	isset($_POST['sexe']) &&
+	isset($_POST['civilite']) &&
 	isset($_POST['prix']) &&
 	isset($_POST['stock']) &&
 	isset($_POST['description']) ) {
@@ -66,7 +66,7 @@ if(
 		$categorie = trim($_POST['categorie']);
 		$couleur = trim($_POST['couleur']);
 		$taille = trim($_POST['taille']);
-		$sexe = trim($_POST['sexe']);
+		$civilite = trim($_POST['civilite']);
 		$prix = trim($_POST['prix']);
 		$stock = trim($_POST['stock']);
 		$description = trim($_POST['description']);	
@@ -146,13 +146,13 @@ if(
 			
 			if(!empty($id_article)) {
 				// si $id_article n'est pas vide c'est un UPDATE
-				$enregistrement = $pdo->prepare("UPDATE article SET reference = :reference, titre = :titre, categorie = :categorie, couleur = :couleur, taille = :taille, sexe = :sexe, prix = :prix, stock = :stock, description = :description, photo = :photo WHERE id_article = :id_article");
+				$enregistrement = $pdo->prepare("UPDATE article SET reference = :reference, titre = :titre, categorie = :categorie, couleur = :couleur, taille = :taille, civilite = :civilite, prix = :prix, stock = :stock, description = :description, photo = :photo WHERE id_article = :id_article");
 				// on rajoute le bindParam pour l'id_article car => modification
 				$enregistrement->bindParam(":id_article", $id_article, PDO::PARAM_STR);
 				
 			} else {
 				// sinon un INSERT
-				$enregistrement = $pdo->prepare("INSERT INTO article (reference, titre, categorie, couleur, taille, sexe, prix, stock, description, photo) VALUES (:reference, :titre, :categorie, :couleur, :taille, :sexe, :prix, :stock, :description, :photo)");
+				$enregistrement = $pdo->prepare("INSERT INTO article (reference, titre, categorie, couleur, taille, civilite, prix, stock, description, photo) VALUES (:reference, :titre, :categorie, :couleur, :taille, :civilite, :prix, :stock, :description, :photo)");
 			}
 			
 			
@@ -162,7 +162,7 @@ if(
 			$enregistrement->bindParam(":categorie", $categorie, PDO::PARAM_STR);
 			$enregistrement->bindParam(":couleur", $couleur, PDO::PARAM_STR);
 			$enregistrement->bindParam(":taille", $taille, PDO::PARAM_STR);
-			$enregistrement->bindParam(":sexe", $sexe, PDO::PARAM_STR);
+			$enregistrement->bindParam(":civilite", $civilite, PDO::PARAM_STR);
 			$enregistrement->bindParam(":prix", $prix, PDO::PARAM_STR);
 			$enregistrement->bindParam(":stock", $stock, PDO::PARAM_STR);
 			$enregistrement->bindParam(":description", $description, PDO::PARAM_STR);
@@ -200,7 +200,7 @@ if(isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_a
 		$categorie = $article_actuel['categorie'];
 		$couleur = $article_actuel['couleur'];
 		$taille = $article_actuel['taille'];
-		$sexe = $article_actuel['sexe'];
+		$civilite = $article_actuel['civilite'];
 		$photo_actuelle = $article_actuel['photo'];
 		$prix = $article_actuel['prix'];
 		$stock = $article_actuel['stock'];
@@ -258,7 +258,7 @@ include '../inc/nav.inc.php';
 				echo '<th>Description</th>';
 				echo '<th>Couleur</th>';
 				echo '<th>Taille</th>';
-				echo '<th>Sexe</th>';
+				echo '<th>civilite</th>';
 				echo '<th>Photo</th>';
 				echo '<th>Prix</th>';
 				echo '<th>Stock</th>';
@@ -275,7 +275,7 @@ include '../inc/nav.inc.php';
 					echo '<td>' . substr($article['description'], 0, 14) . ' ...</td>';
 					echo '<td>' . $article['couleur'] . '</td>';
 					echo '<td>' . $article['taille'] . '</td>';
-					echo '<td>' . $article['sexe'] . '</td>';
+					echo '<td>' . $article['civilite'] . '</td>';
 					echo '<td><img src="' . URL . 'img/' . $article['photo'] . '" class="img-thumbnail" width="140"></td>';
 					echo '<td>' . $article['prix'] . '</td>';
 					echo '<td>' . $article['stock'] . '</td>';
@@ -365,10 +365,10 @@ echo '<td><a href="?action=supprimer&id_article=' . $article['id_article'] . '" 
 	</select>
 </div>	
 <div class="form-group">
-	<label for="sexe">Sexe</label>
-	<select name="sexe" id="sexe" class="form-control">
+	<label for="civilite">civilite</label>
+	<select name="civilite" id="civilite" class="form-control">
 		<option value="m">Homme</option>
-		<option value="f" <?php if($sexe == 'f') { echo 'selected'; } ?> >Femme</option>
+		<option value="f" <?php if($civilite == 'f') { echo 'selected'; } ?> >Femme</option>
 	</select>
 </div>	
 <?php
