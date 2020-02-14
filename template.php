@@ -1,8 +1,9 @@
 <?php
-include 'inc/init.inc.php';
-include 'inc/fonction.inc.php';
 $debug = 0;
 include 'inc/tools.php';
+include 'inc/init.inc.php';
+include 'inc/fonction.inc.php';
+
 
 
 include 'inc/header.php';
