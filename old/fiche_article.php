@@ -24,7 +24,7 @@ include 'inc/nav.inc.php';
 ?>
 
 	<div class="starter-template">
-		<h1><i class="fas fa-ghost" style="color: #4c6ef5;"></i> <?php echo $article['titre']; ?> <i class="fas fa-ghost" style="color: #4c6ef5;"></i></h1>
+		<h1><i class="fas fa-couch" style="color: #4c6ef5;"></i> <?php echo $article['titre']; ?> <i class="fas fa-couch" style="color: #4c6ef5;"></i></h1>
 		<p class="lead"><?php echo $msg; ?></p>
 	</div>
 

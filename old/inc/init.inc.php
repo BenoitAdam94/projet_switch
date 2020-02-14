@@ -1,7 +1,7 @@
 <?php
 
 // Connexion à la BDD
-$host_db = 'mysql:host=localhost;dbname=switch'; 
+$host_db = 'mysql:host=localhost;dbname=eboutique'; 
 $login = 'root'; 
 $password = ''; 
 $options = array(
