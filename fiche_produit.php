@@ -8,10 +8,19 @@ include 'inc/fonction.inc.php';
 if(!isset($_GET['id_produit'])) {
 	header('location:index.php');
 } else { 
-  dump($_GET); 
-  $liste_produit = $pdo->prepare("SELECT * FROM produit, salle, avis WHERE produit.id_salle = salle.id_salle AND avis.id_salle = salle.id_salle AND id_produit = :id_produit");
+  // dump($_GET);
+  $liste_produit = $pdo->prepare("SELECT * FROM produit, salle WHERE produit.id_salle = salle.id_salle  AND id_produit = :id_produit");
   $liste_produit->bindParam(':id_produit', $_GET['id_produit'], PDO::PARAM_STR);
   $liste_produit->execute();
+
+  $produit = $liste_produit->fetch(PDO::FETCH_ASSOC);
+
+
+  $liste_avis = $pdo->prepare("SELECT note FROM avis WHERE id_salle = :id_salle");
+  $liste_avis->bindParam(':id_salle', $produit["id_salle"], PDO::PARAM_STR);
+  $liste_avis->execute();
+
+  $avis = $liste_avis->fetch(PDO::FETCH_ASSOC);
 }
 
 
@@ -22,17 +31,9 @@ if(!isset($_GET['id_produit'])) {
 
 //$avis_produit = $pdo->query("SELECT note FROM avis");
 
-$produit = $liste_produit->fetch(PDO::FETCH_ASSOC);
 
-dump($produit);
-
-
-
-
-
-
-
-
+// dump($produit);
+dump($avis);
 
 include 'inc/header.php';
 include 'inc/navbar.php';
@@ -44,10 +45,10 @@ include 'inc/navbar.php';
     <!-- 1 rst row -->
     <div class="row">
       <div class="col-10">
-      <h2><?= $produit['titre'] ?> avis : X/10</h2>
+      <h2><?= $produit['titre'] ?> avis : <?= $avis['note'] ?>/10</h2>
       </div>
-      <div class="col-2">
-      Reserver
+      <div class="col-2 text-center">
+      <h3><a href="reservation.php">Reserver</a></h3>
       </div>
       <div class="col-8">
         <img src="img/<?= $produit['photo'] ?>" alt="<?= $produit['photo'] ?>">
@@ -70,12 +71,12 @@ include 'inc/navbar.php';
       <p>Départ : <?= $produit['date_depart'] ?></p>
       </div>
       <div class="col-4">
-      <p>Capacité : <?= $produit['capacite'] ?></p>
+      <p>Capacité : <?= $produit['capacite'] ?> personnes</p>
       <p>Catégorie : <?= $produit['categorie'] ?></p>
       </div>
       <div class="col-4">
-      <p>Adresse : <?= $produit['adresse'] ?></p>
-      <p>Tarif : <?= $produit['prix'] ?></p>
+      <p>Adresse : <?= $produit['adresse'] ?> <?= $produit['cp'] ?> <?= $produit['ville'] ?></p>
+      <p>Tarif : <?= $produit['prix'] ?> €</p>
       </div>
 
       </div>

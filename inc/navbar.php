@@ -39,7 +39,7 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administration</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
-              <a class="dropdown-item" href="<?php echo URL; ?>admin/gestion_article.php">Gestion des articles</a>
+              <a class="dropdown-item" href="<?php echo URL; ?>gestion_salle.php">Gestion des salles</a>
               <a class="dropdown-item" href="<?php echo URL; ?>admin/gestion_membre.php">Gestion des membres</a>
               <a class="dropdown-item" href="<?php echo URL; ?>admin/gestion_commande.php">Gestion des commandes</a>
               <a class="dropdown-item" href="<?php echo URL; ?>admin/statistiques.php">Statistiques</a>

@@ -9,6 +9,7 @@
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="https://kit.fontawesome.com/a9c7eed9d3.js"></script>
 
 </body>
 
