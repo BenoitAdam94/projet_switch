@@ -72,6 +72,7 @@ function total_panier() {
 	return round($total, 2);
 }
 
+js('fonction_ok');
 
 
 

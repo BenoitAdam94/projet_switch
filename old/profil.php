@@ -1,8 +1,9 @@
 <?php 
-include 'inc/init.inc.php';
-include 'inc/fonction.inc.php';
 $debug = 0;
 include 'inc/tools.php';
+include 'inc/init.inc.php';
+include 'inc/fonction.inc.php';
+
 
 // restriction d'accès, si l'utilisateur n'est pas connecté, on le renvoie sur connexion.php
 if(!user_is_connect()) {

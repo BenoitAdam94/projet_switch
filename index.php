@@ -1,8 +1,9 @@
 <?php
-include 'inc/init.inc.php';
-include 'inc/fonction.inc.php';
 $debug = 0;
 include 'inc/tools.php';
+include 'inc/init.inc.php';
+include 'inc/fonction.inc.php';
+
 
 
 // $liste_salle = $pdo->query("SELECT * FROM salle ORDER BY titre");
@@ -78,7 +79,7 @@ include 'inc/navbar.php';
               <a href="fiche_produit.php"><img class="card-img-top" src="img/<?= $produit['photo'] ?>" alt="<?= $produit['photo'] ?>"></a>
               <div class="card-body">
                 <h4 class="card-title">
-                  <a href="fiche_produit.php"><?= $produit['titre'] ?></a>
+                  <a href="fiche_produit.php?id_produit=<?= $produit['id_produit'] ?>"><?= $produit['titre'] ?></a>
                 </h4>
                 <h5><?= $produit['prix'] ?> €</h5>
                 <p class="card-text"><?= $produit['date_arrivee'] ?></p>
