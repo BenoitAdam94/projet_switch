@@ -10,7 +10,6 @@ if(!user_is_connect()) {
 }
 
 
-
 include 'inc/header.php';
 include 'inc/navbar.php';
 ?>

@@ -7,12 +7,15 @@ include 'inc/fonction.inc.php';
 
 if(!isset($_GET['id_produit'])) {
 	header('location:index.php');
-} else { dump($_GET); }
+} else { 
+  dump($_GET); 
+  $liste_produit = $pdo->prepare("SELECT * FROM produit, salle, avis WHERE produit.id_salle = salle.id_salle AND avis.id_salle = salle.id_salle AND id_produit = :id_produit");
+  $liste_produit->bindParam(':id_produit', $_GET['id_produit'], PDO::PARAM_STR);
+  $liste_produit->execute();
+}
 
 
-$liste_produit = $pdo->prepare("SELECT * FROM produit, salle WHERE produit.id_salle = salle.id_salle");
-$liste_produit->bindParam(':id_produit', $_GET['id_produit'], PDO::PARAM_STR);
-$liste_produit->execute();
+
 
 
 //$liste_produit = $pdo->query("SELECT * FROM produit, salle WHERE produit.id_salle = salle.id_salle ORDER BY date_arrivee");

@@ -21,6 +21,7 @@ $civilite = '';
 $date = new DateTime();
 $date_enregistrement = $date->format('Y-m-d H:i:s');
 
+dump($_SESSION);
 
 
 

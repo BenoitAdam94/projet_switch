@@ -70,7 +70,7 @@ if (isset($_POST['pseudo']) && isset($_POST['mdp'])) {
 
 
 
-
+dump($_SESSION);
 
 
 include 'inc/header.php';
@@ -81,6 +81,7 @@ include 'inc/navbar.php';
 <!-- Page Content -->
 <div class="container">
   <!-- 1 rst row -->
+  <?= $msg; ?>
   <div class="row">
     <form method="post" action="">
       <div class="form-group">
