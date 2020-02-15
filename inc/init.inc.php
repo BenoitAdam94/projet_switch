@@ -3,7 +3,7 @@
 // Connexion à la BDD
 $host_db = 'mysql:host=localhost;dbname=switch'; 
 $login = 'root'; 
-$password = ''; 
+$password = 'root'; 
 $options = array(
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING, 
 				PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8' 

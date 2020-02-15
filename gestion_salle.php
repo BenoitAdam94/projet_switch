@@ -9,6 +9,117 @@ if (!user_is_admin()) {
   exit(); // bloque l'exécution du code 
 }
 
+//*********************************************************************
+//*********************************************************************
+// SUPPRESSION D'UN ARTICLE
+//*********************************************************************
+//*********************************************************************
+if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id_salle'])) {
+	$suppression = $pdo->prepare("DELETE FROM salle WHERE id_salle = :id_salle");
+	$suppression->bindParam(":id_salle", $_GET['id_salle'], PDO::PARAM_STR);
+	$suppression->execute();
+
+	// $_GET['action'] = 'affichage'; // pour provoquer l'affichage du tableau
+
+}
+
+//*********************************************************************
+//*********************************************************************
+// \FIN SUPPRESSION D'UN ARTICLE
+//*********************************************************************
+//*********************************************************************
+
+
+$titre = '';
+$description = '';
+$photo = '';
+$capacite = '';
+$categorie = '';
+$pays = '';
+$ville = '';
+$adresse = '';
+$cp = '';
+
+
+
+dump($_SESSION);
+
+
+
+// on controle l'existence des champs du formulaire	
+if(
+	isset($_POST['titre']) && 
+	isset($_POST['description']) && 
+	isset($_POST['photo']) && 
+	isset($_POST['capacite']) && 
+	isset($_POST['categorie']) && 
+	isset($_POST['pays']) && 
+	isset($_POST['ville']) && 
+	isset($_POST['adresse']) && 
+	isset($_POST['cp'])) {
+		
+		// echo 'TEST';
+		$titre = trim($_POST['titre']);
+		$description = trim($_POST['description']);
+		$photo = trim($_POST['photo']);
+		$capacite = trim($_POST['capacite']);
+		$categorie = trim($_POST['categorie']);
+		$pays = trim($_POST['pays']);
+		$ville = trim($_POST['ville']);
+		$adresse = trim($_POST['adresse']);
+		$cp = trim($_POST['cp']);
+		
+		$verif_caractere = preg_match('#^[a-zA-Z0-9._-]+$#', $titre);
+
+		if(!$verif_caractere && !empty($titre)) {
+			// Message d'erreur
+			$msg .= '<div class="alert alert-danger mt-3">Pseudo invalide, caractères autorisés : a-z et de 0-9</div>';			
+		}
+		
+		// Taille pseudo entre 4 et 14
+		if(iconv_strlen($titre) < 4 || iconv_strlen($titre) > 14) {
+			// Message d'erreur
+			$msg .= '<div class="alert alert-danger mt-3">Pseudo invalide, le pseudo doit avoir entre 4 et 14 caractères inclus</div>';	
+		}
+		
+		// Format de l'email
+		
+		
+		// S'il n'y pas eu d'erreur au préalable, on doit vérifier si le pseudo existe déjà dans la BDD
+		if(empty($msg)) {
+			// si la variable $msg est vide, alors il n'y a pas eu d'erreur dans nos controles.
+			
+			// on vérifie si le titre est disponible.
+			$verif_titre = $pdo->prepare("SELECT * FROM salle WHERE titre = :titre");
+			$verif_titre->bindParam(":titre", $titre, PDO::PARAM_STR);
+			$verif_titre->execute();
+			
+			if($verif_titre->rowCount() > 0) {
+				// si le nombre de ligne est supérieur à zéro, alors le pseudo est déjà utilisé.
+				$msg .= '<div class="alert alert-danger mt-3">Cette salle existe déjà</div>';	
+			} else {
+				
+				
+				// On déclenche l'insertion
+				$enregistrement = $pdo->prepare("INSERT INTO salle (id_salle, titre, description, photo, pays, ville, adresse, cp, capacite, categorie) VALUES (NULL, :titre, :description, :photo, :pays, :ville, :adresse, :cp, :capacite, :categorie)");
+				$enregistrement->bindParam(':titre', $titre, PDO::PARAM_STR);
+				$enregistrement->bindParam(':description', $description, PDO::PARAM_STR);
+				$enregistrement->bindParam(':photo', $photo, PDO::PARAM_STR);
+				$enregistrement->bindParam(':pays', $pays, PDO::PARAM_STR);
+				$enregistrement->bindParam(':ville', $ville, PDO::PARAM_STR);
+				$enregistrement->bindParam(':adresse', $adresse, PDO::PARAM_STR);
+				$enregistrement->bindParam(':cp', $cp, PDO::PARAM_STR);
+				$enregistrement->bindParam(':capacite', $capacite, PDO::PARAM_STR);
+				$enregistrement->bindParam(':categorie', $categorie, PDO::PARAM_STR);
+				$enregistrement->execute();
+			}			
+			
+		}		
+	
+} else {
+  $msg .= 'Veuillez remplir le formulaire';		
+}
+
 
 include 'inc/header.php';
 include 'inc/navbar.php';
@@ -57,7 +168,12 @@ include 'inc/navbar.php';
           echo '<td>' . $salle['cp'] . '</td>';
           echo '<td>' . $salle['capacite'] . '</td>';
           echo '<td>' . $salle['categorie'] . '</td>';
-          echo '<td><i class="fas fa-exchange-alt"></i> <i class="fas fa-trash-alt"></i></td>';
+          echo '<td>';
+          echo '<a href="gestion_salle.php?action=modifier&id_salle=' . $salle['id_salle'] . '">';
+          echo '<i class="fas fa-exchange-alt"></i></a> ';
+          echo '<a href="gestion_salle.php?action=supprimer&id_salle=' . $salle['id_salle'] . '">';
+          echo '<i class="fas fa-trash-alt"></i></a>';
+          echo '</td>';
           echo '</td>';
         }
         ?>
@@ -66,81 +182,89 @@ include 'inc/navbar.php';
 
     <div class="col-12 text-center">
       <h2>Ajouter une salle</h3>
-    </div>
-
-    <div class="col-6">
-      <form method="post" action="">
-        <!-- enctype="multipart/form-data" -->
-
-        <!-- récupération de l'id_article pour la modification -->
-        <input name="id_article" value="<?= '$id_article' ?>">
-
-        <div class="row">
-          <div class="col-6">
-            <div class="form-group">
-              <label for="titre">Titre</label>
-              <input type="text" name="titre" id="titre" value="<?= '' ?>" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="description">Description</label>
-              <textarea name="description" id="description" rows="2" class="form-control"><?= '' ?></textarea>
-            </div>
-            <div class="form-group">
-              <label for="photo">Photo</label>
-              <input type="file" name="photo" id="photo" class="form-control">
-            </div>
-            <div class="from-group">
-              <label for="capacite">Capacité</label>
-              <select name="capacite" id="capacite" class="form-control">
-                <option>1</option>
-                <option>5</option>
-                <option>10</option>
-                <option>15</option>
-              </select>
-              <div>
-                <div class="from-group">
-                  <label for="categorie">Categorie</label>
-                  <select name="categorie" id="categorie" class="form-control">
-                    <option>1</option>
-                    <option>5</option>
-                    <option>10</option>
-                    <option>15</option>
-                  </select>
-                </div>
-                <div class="from-group">
-                  <label for="pays">Pays</label>
-                  <select name="pays" id="pays" class="form-control">
-                    <option>France</option>
-                    <option>Corse</option>
-                    <option>DOM</option>
-                  </select>
-                </div>
-                <div class="from-group">
-                  <label for="ville">Ville</label>
-                  <select name="ville" id="ville" class="form-control">
-                    <option>Paris</option>
-                    <option>Lyon</option>
-                    <option>Marseille</option>
-                  </select>
-                </div>
-                <div class="from-group">
-                  <label for="adresse">Adresse</label>
-                  <textarea name="adresse" id="adresse" rows="2" class="form-control"><?= '' ?></textarea>
-                </div>
-                <div class="form-group">
-                  <label for="cp">Code Postal</label>
-                  <input type="cp" name="cp" id="cp" value="<?= 'valeur' ?>" class="form-control">
-                </div>
-                <div class="form-group">
-                  <button type="submit" name="enregistrement" id="enregistrement" class="form-control btn btn-outline-dark">Enregistrer </button>
-                </div>
-
-              </div>
-            </div>
-      </form>
-
+      <p class="lead"><?php echo $msg; ?></p>
     </div>
   </div>
+
+  
+
+  <!-- enctype="multipart/form-data" -->
+
+  <!-- récupération de l'id_article pour la modification -->
+
+  <form method="post" action="">
+    <div class="row">
+
+
+      <div class="col-6">
+        <input name="id_article" value="<?= '$id_article' ?>">
+        <div class="form-group">
+          <label for="titre">Titre</label>
+          <input type="text" name="titre" id="titre" value="<?= $titre; ?>" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea name="description" id="description" rows="2" class="form-control"><?= $description; ?></textarea>
+        </div>
+        <div class="form-group">
+          <label for="photo">Photo</label>
+          <input type="file" name="photo" id="photo" class="form-control">
+        </div>
+        <div class="from-group">
+          <label for="capacite">Capacité</label>
+          <select name="capacite" id="capacite" class="form-control">
+          <script>
+              for(i=1;i<51;i++) {
+                document.write('<option value="' + i + '">' + i + '</option>');
+              }
+            </script>
+          </select>
+        </div>
+        <div class="from-group">
+          <label for="categorie">Categorie</label>
+          <select name="categorie" id="categorie" class="form-control">
+            <option>bureau</option>
+            <option>reunion</option>
+            <option>formation</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="from-group">
+          <label for="pays">Pays</label>
+          <select name="pays" id="pays" class="form-control">
+            <option value="france">France</option>
+            <option value="corse">Corse</option>
+            <option value="dom">DOM</option>
+          </select>
+        </div>
+        <div class="from-group">
+          <label for="ville">Ville</label>
+          <select name="ville" id="ville" class="form-control">
+            <option value="paris">Paris</option>
+            <option value="lyon">Lyon</option>
+            <option value="marseille">Marseille</option>
+          </select>
+        </div>
+        <div class="from-group">
+          <label for="adresse">Adresse</label>
+          <textarea name="adresse" id="adresse" rows="2" class="form-control"><?= $adresse; ?></textarea>
+        </div>
+        <div class="form-group">
+          <label for="cp">Code Postal</label>
+          <input type="cp" name="cp" id="cp" value="<?= $cp; ?>" class="form-control">
+        </div>
+        <div class="form-group">
+          <button type="submit" name="enregistrement" id="enregistrement" class="form-control btn btn-outline-dark">Enregistrer </button>
+        </div>
+
+      </div>
+
+
+    </div>
+  </form>
+
+</div>
 
 
 
