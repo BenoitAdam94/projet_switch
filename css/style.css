@@ -14,3 +14,6 @@ table, tr, td, th{
   border:1px solid black;
   padding:0.25em;
 }
+table{
+  width: 100%;;
+}

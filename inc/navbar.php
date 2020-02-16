@@ -40,9 +40,10 @@
             <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administration</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
               <a class="dropdown-item" href="gestion_salle.php">Gestion des salles</a>
-              <a class="dropdown-item" href="admin/gestion_membre.php">Gestion des membres</a>
-              <a class="dropdown-item" href="admin/gestion_commande.php">Gestion des commandes</a>
-              <a class="dropdown-item" href="admin/statistiques.php">Statistiques</a>
+              <a class="dropdown-item" href="gestion_membre.php">Gestion des membres</a>
+              <a class="dropdown-item" href="gestion_avis.php">Gestion des avis</a>
+              <a class="dropdown-item" href="gestion_commande.php">Gestion des commandes</a>
+              <a class="dropdown-item" href="statistiques.php">Statistiques</a>
             </div>
           </li>
 

@@ -40,6 +40,7 @@ $ville = '';
 $adresse = '';
 $cp = '';
 $photo_bdd = '';
+$nom_photo = '';
 $reference = rand(0, 9999);
 
 
@@ -108,84 +109,52 @@ if (
       $msg .= '<div class="alert alert-danger mt-3">Vous venez deffectuer une modification</div>';
     } else {*/
 
-      js('else');
+    js('else');
 
-
-      //
-
-
-      // vérification du format de l'image, formats accèptés : jpg, jpeg, png, gif
-      // est-ce qu'une image a été posté : 
-      if (!empty($_FILES['photo']['name'])) {
-
-        // on vérifie le format de l'image en récupérant son extension
-        $extension = strrchr($_FILES['photo']['name'], '.');
-        // strrchr() découpe une chaine fournie en premier argument en partant de la fin. On remonte jusqu'au caractère fourni en deuxième argument et on récupère tout depuis ce caractère.
-        // exemple strrchr('image.png', '.'); => on récupère .png
-        dump($extension);
-
-        // on enlève le point et on passe l'extension en minuscule pour pouvoir la comparer.
-        $extension = strtolower(substr($extension, 1));
-        // exemple : .PNG => png    .Jpeg => jpeg
-
-        // on déclare un tableau array contenant les extensions autorisées :
-        $tab_extension_valide = array('png', 'gif', 'jpg', 'jpeg');
-
-        // in_array(ce_quon_cherche, tableau_ou_on_cherche);
-        // in_array() renvoie true si le premier argument correspond à une des valeurs présentes dans le tableau array fourni en deuxième argument. Sinon false
-        $verif_extension = in_array($extension, $tab_extension_valide);
-
-        if ($verif_extension) {
-
-          // pour ne pasd écraser une image du même nom, on renomme l'image en rajoutant la référence qui est une information unique
-          $nom_photo = $reference . '-' . $_FILES['photo']['name'];
-
-          $photo_bdd = $nom_photo; // représente l'insertion en BDD
-
-          // on prépare le chemin où on va enregistrer l'image
-          $photo_dossier = 'img/' . $nom_photo;
-          // dump($photo_dossier);
-
-          // copy(); permet de copier un fichier depuis un emplacement fourni en premier argument vers un emplacement fourni en deuxième
-          copy($_FILES['photo']['tmp_name'], $photo_dossier);
-        } else {
-          $msg .= '<div class="alert alert-danger mt-3">Attention, le format de la photo est invalide, extensions autorisées : jpg, jpeg, png, gif.</div>';
-        }
-      //}
-
-
-
-
-      if (empty($msg)) {
-        if (!empty($id_salle)) {
-          // si $id_article n'est pas vide c'est un UPDATE
-          $enregistrement = $pdo->prepare("UPDATE salle SET titre = :titre, description = :description , photo = :photo, pays = :pays, ville = :ville, adresse = :adresse, cp = :prix, capacite = :capacite, capacite = :capacite, categorie = :categorie WHERE id_salle = :id_salle");
-          // on rajoute le bindParam pour l'id_salle car => modification
-          $enregistrement->bindParam(":id_salle", $id_salle, PDO::PARAM_STR);
-        } else {
-          // sinon un INSERT
-          $enregistrement = $pdo->prepare("INSERT INTO salle (id_salle, titre, description, photo, pays, ville, adresse, cp, capacite, categorie) VALUES (NULL, :titre, :description, :photo, :pays, :ville, :adresse, :cp, :capacite, :categorie)");
-        }
-
-
-
-        // On déclenche l'insertion
-        js('insertion');
-
-        // on peut déclencher l'enregistrement s'il n'y a pas eu d'erreur dans les traitements précédents
-
-
-        $enregistrement->bindParam(':titre', $titre, PDO::PARAM_STR);
-        $enregistrement->bindParam(':description', $description, PDO::PARAM_STR);
-        $enregistrement->bindParam(':photo', $nom_photo, PDO::PARAM_STR);
-        $enregistrement->bindParam(':pays', $pays, PDO::PARAM_STR);
-        $enregistrement->bindParam(':ville', $ville, PDO::PARAM_STR);
-        $enregistrement->bindParam(':adresse', $adresse, PDO::PARAM_STR);
-        $enregistrement->bindParam(':cp', $cp, PDO::PARAM_STR);
-        $enregistrement->bindParam(':capacite', $capacite, PDO::PARAM_STR);
-        $enregistrement->bindParam(':categorie', $categorie, PDO::PARAM_STR);
-        $enregistrement->execute();
+    if (!empty($_FILES['photo']['name'])) {
+      $nom_photo = verif_photo_pj();
+      dump($nom_photo);
+      if ($nom_photo === false) {
+        $msg .= '<div class="alert alert-danger mt-3">Attention, le format de la photo est invalide, extensions autorisées : jpg, jpeg, png, gif.</div>';
+        // dump($msg);
       }
+    }
+
+    if ($nom_photo === '') {
+      $msg .= '<div class="alert alert-danger mt-3">Veuillez attacher une piece jointe</div>';
+    }
+
+
+
+    if (empty($msg)) {
+      if (!empty($id_salle)) {
+        // si $id_article n'est pas vide c'est un UPDATE
+        $enregistrement = $pdo->prepare("UPDATE salle SET titre = :titre, description = :description , photo = :photo, pays = :pays, ville = :ville, adresse = :adresse, cp = :prix, capacite = :capacite, capacite = :capacite, categorie = :categorie WHERE id_salle = :id_salle");
+        // on rajoute le bindParam pour l'id_salle car => modification
+        $enregistrement->bindParam(":id_salle", $id_salle, PDO::PARAM_STR);
+      } else {
+        // sinon un INSERT
+        $enregistrement = $pdo->prepare("INSERT INTO salle (id_salle, titre, description, photo, pays, ville, adresse, cp, capacite, categorie) VALUES (NULL, :titre, :description, :photo, :pays, :ville, :adresse, :cp, :capacite, :categorie)");
+      }
+
+
+
+      // On déclenche l'insertion
+      js('insertion');
+
+      // on peut déclencher l'enregistrement s'il n'y a pas eu d'erreur dans les traitements précédents
+
+
+      $enregistrement->bindParam(':titre', $titre, PDO::PARAM_STR);
+      $enregistrement->bindParam(':description', $description, PDO::PARAM_STR);
+      $enregistrement->bindParam(':photo', $nom_photo, PDO::PARAM_STR);
+      $enregistrement->bindParam(':pays', $pays, PDO::PARAM_STR);
+      $enregistrement->bindParam(':ville', $ville, PDO::PARAM_STR);
+      $enregistrement->bindParam(':adresse', $adresse, PDO::PARAM_STR);
+      $enregistrement->bindParam(':cp', $cp, PDO::PARAM_STR);
+      $enregistrement->bindParam(':capacite', $capacite, PDO::PARAM_STR);
+      $enregistrement->bindParam(':categorie', $categorie, PDO::PARAM_STR);
+      $enregistrement->execute();
     }
   }
 } else {
@@ -286,7 +255,7 @@ include 'inc/navbar.php';
           echo '<a href="gestion_salle.php?action=supprimer&id_salle=' . $salle['id_salle'] . '">';
           echo '<i class="fas fa-trash-alt"></i></a>';
           echo '</td>';
-          echo '</td>';
+          echo '</tr>';
         }
         ?>
       </table>
