@@ -72,6 +72,48 @@ function total_panier() {
 	return round($total, 2);
 }
 
+function verif_photo_pj() {
+
+if (!empty($_FILES['photo']['name'])) {
+
+	// on vérifie le format de l'image en récupérant son extension
+	$extension = strrchr($_FILES['photo']['name'], '.');
+	// strrchr() découpe une chaine fournie en premier argument en partant de la fin. On remonte jusqu'au caractère fourni en deuxième argument et on récupère tout depuis ce caractère.
+	// exemple strrchr('image.png', '.'); => on récupère .png
+	dump($extension);
+
+	// on enlève le point et on passe l'extension en minuscule pour pouvoir la comparer.
+	$extension = strtolower(substr($extension, 1));
+	// exemple : .PNG => png    .Jpeg => jpeg
+
+	// on déclare un tableau array contenant les extensions autorisées :
+	$tab_extension_valide = array('png', 'gif', 'jpg', 'jpeg');
+
+	// in_array(ce_quon_cherche, tableau_ou_on_cherche);
+	// in_array() renvoie true si le premier argument correspond à une des valeurs présentes dans le tableau array fourni en deuxième argument. Sinon false
+	$verif_extension = in_array($extension, $tab_extension_valide);
+
+	if ($verif_extension) {
+
+	  // pour ne pasd écraser une image du même nom, on renomme l'image en rajoutant la référence qui est une information unique
+	  $nom_photo = $reference . '-' . $_FILES['photo']['name'];
+
+	  $photo_bdd = $nom_photo; // représente l'insertion en BDD
+
+	  // on prépare le chemin où on va enregistrer l'image
+	  $photo_dossier = 'img/' . $nom_photo;
+	  // dump($photo_dossier);
+
+	  // copy(); permet de copier un fichier depuis un emplacement fourni en premier argument vers un emplacement fourni en deuxième
+	  copy($_FILES['photo']['tmp_name'], $photo_dossier);
+	  info('le fichier a ete copié dans le dossier');
+	} else {
+	  $msg .= '<div class="alert alert-danger mt-3">Attention, le format de la photo est invalide, extensions autorisées : jpg, jpeg, png, gif.</div>';
+	  return $msg;
+	}
+  }
+}
+
 js('fonction_ok');
 
 
