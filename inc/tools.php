@@ -35,13 +35,32 @@ function info($js) {
     echo '</script>';
 }
 
+// Javascript Alert for PHP
+
+function alert($js) {
+    echo '<script>';
+    echo "alert('Nouveau mot de passe == ' + '$js');";
+    echo '</script>';
+}
+
 // Informations
 
-if($debug == 1){
+if($debug == 1) {
     dump($_COOKIE);
     dump($_SERVER);
     dump($_POST);
     dump($_GET);
     }
 
+function genererChaineAleatoire($longueur, $listeCar = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+    $chaine = '';
+    $max = mb_strlen($listeCar, '8bit') - 1;
+    for ($i = 0; $i < $longueur; ++$i) {
+    $chaine .= $listeCar[random_int(0, $max)];
+    }
+    return $chaine;
+}
+// Utilisation de la fonction
+// echo genererChaineAleatoire(10, 'abcdefghijklmnopqrstuvwxyz');
+// echo genererChaineAleatoire(10)
 ?>

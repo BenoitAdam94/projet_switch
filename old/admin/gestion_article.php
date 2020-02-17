@@ -148,6 +148,7 @@ if (
 			$enregistrement->bindParam(":id_article", $id_article, PDO::PARAM_STR);
 		} else {
 			// sinon un INSERT
+			
 			$enregistrement = $pdo->prepare("INSERT INTO article (reference, titre, categorie, couleur, taille, civilite, prix, stock, description, photo) VALUES (:reference, :titre, :categorie, :couleur, :taille, :civilite, :prix, :stock, :description, :photo)");
 		}
 

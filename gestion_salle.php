@@ -205,6 +205,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
 
 include 'inc/header.php';
 include 'inc/navbar.php';
+dump($_POST);
 ?>
 
 
@@ -252,9 +253,9 @@ include 'inc/navbar.php';
           echo '<td>' . $salle['categorie'] . '</td>';
           echo '<td>';
           echo '<a href="gestion_salle.php?action=modifier&id_salle=' . $salle['id_salle'] . '">';
-          echo '<i class="fas fa-exchange-alt"></i></a> ';
+          echo '<i class="fas fa-exchange-alt fa-lg"></i></a> ';
           echo '<a href="gestion_salle.php?action=supprimer&id_salle=' . $salle['id_salle'] . '">';
-          echo '<i class="fas fa-trash-alt"></i></a>';
+          echo '<i class="fas fa-trash-alt fa-lg"></i></a>';
           echo '</td>';
           echo '</tr>';
         }

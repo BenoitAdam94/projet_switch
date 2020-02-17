@@ -24,11 +24,140 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id
 
 }
 
+//*********************************************************************
+//*********************************************************************
+// \FIN SUPPRESSION D'UN MEMBRE
+//*********************************************************************
+//*********************************************************************
 
+
+$id_membre = ''; // pour la modification
+$pseudo = "";
+$mdp = "";
+$nom = "";
+$prenom = "";
+$email = "";
+$civilite = "";
+$statut = "";
+$date = new DateTime();
+$date_enregistrement = $date->format('Y-m-d H:i:s');
 
 $msg = '';
 
 
+
+
+
+
+
+//*********************************************************************
+//*********************************************************************
+// ENREGISTREMENT & MODIFICATION DES MEMBRES
+//*********************************************************************
+//*********************************************************************
+if (
+	isset($_POST['pseudo']) &&
+  isset($_POST['mdp']) &&
+	isset($_POST['nom']) &&
+	isset($_POST['prenom']) &&
+	isset($_POST['email']) &&
+	isset($_POST['civilite']) &&
+	isset($_POST['statut'])
+) {
+
+  
+
+  $id_membre = trim($_POST['id_membre']);
+	$pseudo = trim($_POST['pseudo']);
+  $mdp = trim($_POST['mdp']);
+	$nom = trim($_POST['nom']);
+	$prenom = trim($_POST['prenom']);
+	$email = trim($_POST['email']);
+	$civilite = trim($_POST['civilite']);
+	$statut = trim($_POST['statut']);
+	
+
+  if (empty($msg)) {
+    js('if empty msg');
+
+		if (!empty($id_membre)) {
+      // si id_membre existe un UPDATE
+      js('if id_membre ELSE update');
+			
+			$enregistrement = $pdo->prepare("UPDATE membre SET pseudo = :pseudo, mdp = :mdp, nom = :nom, prenom = :prenom, email = :email, civilite = :civilite, statut = :statut, date_enregistrement = :date_enregistrement WHERE id_membre = :id_membre");
+			
+			$enregistrement->bindParam(":id_membre", $id_membre, PDO::PARAM_STR);
+      
+		} else {
+      // sinon un INSERT
+      js('if empty msg ELSE insert');
+			
+      $mdp = password_hash($mdp, PASSWORD_DEFAULT);
+			$enregistrement = $pdo->prepare("INSERT INTO membre (id_membre, pseudo, mdp, nom, prenom, email, civilite, statut, date_enregistrement) VALUES (NULL, :pseudo, :mdp, :nom, :prenom, :email, :civilite, :statut, :date_enregistrement)");
+		}
+
+
+
+		$enregistrement->bindParam(":pseudo", $pseudo, PDO::PARAM_STR);
+    $enregistrement->bindParam(":mdp", $mdp, PDO::PARAM_STR);
+		$enregistrement->bindParam(":nom", $nom, PDO::PARAM_STR);
+		$enregistrement->bindParam(":prenom", $prenom, PDO::PARAM_STR);
+		$enregistrement->bindParam(":email", $email, PDO::PARAM_STR);
+		$enregistrement->bindParam(":civilite", $civilite, PDO::PARAM_STR);
+		$enregistrement->bindParam(":statut", $statut, PDO::PARAM_STR);
+		$enregistrement->bindParam(":date_enregistrement", $date_enregistrement, PDO::PARAM_STR);
+		$enregistrement->execute();
+	}
+
+}
+
+
+
+//*********************************************************************
+//*********************************************************************
+// MODIFICATION : RECUPERATION DES INFOS DE L'ARTICLE EN BDD
+//*********************************************************************
+//*********************************************************************
+if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_membre'])) {
+
+	$infos_membre = $pdo->prepare("SELECT * FROM membre WHERE id_membre = :id_membre");
+	$infos_membre->bindparam(":id_membre", $_GET['id_membre'], PDO::PARAM_STR);
+	$infos_membre->execute();
+
+	if ($infos_membre->rowCount() > 0) {
+		$membre_actuel = $infos_membre->fetch(PDO::FETCH_ASSOC);
+
+		$id_membre = $membre_actuel['id_membre'];
+		$pseudo = $membre_actuel['pseudo'];
+		$mdp = $membre_actuel['mdp'];
+		$nom = $membre_actuel['nom'];
+		$prenom = $membre_actuel['prenom'];
+		$email = $membre_actuel['email'];
+		$civilite = $membre_actuel['civilite'];
+		$statut = $membre_actuel['statut'];
+	}
+}
+
+//*********************************************************************
+//*********************************************************************
+// Generation d'un nouveau mot de passe
+//*********************************************************************
+//*********************************************************************
+
+
+if (isset($_GET['action']) && $_GET['action'] == 'newpassword' && !empty($_GET['id_membre'])) {
+
+  $newpassword = genererChaineAleatoire(10);
+  
+  dump($newpassword);
+  alert($newpassword);
+  $mdp = password_hash($newpassword, PASSWORD_DEFAULT);
+  $update_password = $pdo->prepare("UPDATE membre SET mdp = :mdp WHERE id_membre = :id_membre");
+  $update_password->bindParam(":id_membre", $_GET['id_membre'], PDO::PARAM_STR);
+  $update_password->bindParam(":mdp", $mdp, PDO::PARAM_STR);
+  $update_password->execute();
+
+}
 
 
 
@@ -76,10 +205,12 @@ include 'inc/navbar.php';
           echo '<td>' . $membre['statut'] . '</td>';
           echo '<td>' . $membre['date_enregistrement'] . '</td>';
           echo '<td>';
-          echo '<a href="gestion_membre.php?action=modifier&id_membre=' . $membre['id_membre'] . '">';
-          echo '<i class="fas fa-exchange-alt"></i></a> ';
-          echo '<a href="gestion_membre.php?action=supprimer&id_membre=' . $membre['id_membre'] . '">';
-          echo '<i class="fas fa-trash-alt"></i></a>';
+          echo '<a title="Modifier" href="gestion_membre.php?action=modifier&id_membre=' . $membre['id_membre'] . '">';
+          echo '<i class="fas fa-exchange-alt fa-2x"></i></a> ';
+          echo '<a title="Génerer Mot de passe" href="gestion_membre.php?action=newpassword&id_membre=' . $membre['id_membre'] . '">';
+          echo '<i class="fas fa-key fa-2x"></i></a> ';
+          echo '<a title="Supprimer" href="gestion_membre.php?action=supprimer&id_membre=' . $membre['id_membre'] . '">';
+          echo '<i class="fas fa-trash-alt fa-2x"></i></a>';
           echo '</td>';
           echo '</tr>';
         }
@@ -94,67 +225,66 @@ include 'inc/navbar.php';
   </div>
 
 
-
-
-
   <!-- récupération de l'id_membre pour la modification -->
 
   <form method="post" action="" enctype="multipart/form-data">
     <div class="row">
 
-
       <div class="col-6">
-        <!-- <input type="hidden" name="id_membre" value="<?= '$id_membre'; ?>"> -->
+        <input type="hidden" name="id_membre" value="<?= $id_membre; ?>">
 
 
 
         <!-- Pseudo -->
         <div class="form-group">
           <label for="pseudo">Pseudo</label>
-          <input type="text" name="pseudo" id="pseudo" value="" class="form-control">
+          <input type="text" name="pseudo" id="pseudo" value="<?= $pseudo ?>" class="form-control">
         </div>
         <!-- Mot de passe -->
+        <?php if(empty($mdp)) { ?>
         <div class="form-group">
           <label for="motdepasse">Mot de passe</label>
-          <input type="text" name="motdepasse" id="motdepasse" value="" class="form-control">
+          <input type="text" name="mdp" id="mdp" value="<?= $mdp; ?>" class="form-control">
         </div>
+        <?php } ?>
+
         <!-- Nom -->
         <div class="form-group">
           <label for="nom">Nom</label>
-          <input type="text" name="nom" id="nom" value="" class="form-control">
+          <input type="text" name="nom" id="nom" value="<?= $nom; ?>" class="form-control">
         </div>
         <!-- Prenom -->
         <div class="form-group">
           <label for="prenom">Prenom</label>
-          <input type="text" name="prenom" id="prenom" value="" class="form-control">
+          <input type="text" name="prenom" id="prenom" value="<?= $prenom ?>" class="form-control">
         </div>
       </div>
       <div class="col-6">
         <!-- Email -->
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" name="email" id="email" value="" class="form-control">
+          <input type="email" name="email" id="email" value="<?= $email ?>" class="form-control">
         </div>
         <!-- Civilite -->
         <div class="from-group">
           <label for="civilite">Civilite</label>
           <select name="civilite" id="civilite" class="form-control">
-            <option>Homme</option>
-            <option>Femme</option>
+            <option value="m">Homme</option>
+            <option value="f">Femme</option>
           </select>
         </div>
         <!-- Statut -->
         <div class="from-group">
           <label for="statut">Statut</label>
           <select name="statut" id="statut" class="form-control">
-            <option>Membre</option>
-            <option>Admin</option>
+            <option value="1">Membre</option>
+            <option value="2">Admin</option>
           </select>          
         </div>
         <br>
         <!-- Submit -->
         <div class="form-group">
-          <button type="submit" name="enregistrement" id="enregistrement" class="form-control btn btn-outline-dark">Enregistrer </button>
+          <button type="submit" name="enregistrement" id="enregistrement" class="form-control btn btn-outline-dark">Enregistrer</button>
         </div>
 
       </div>

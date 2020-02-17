@@ -25,42 +25,43 @@ include 'inc/navbar.php';
   <div class="row">
   
     <div class="col-12 text-center">
-      <h2>Gestion des avis</h2>
+      <h2>Gestion des Produits</h2>
 
       <table>
         <tr>
-          <th>id avis</th>
-          <th>id_membre</th>
+          <th>id produit</th>
+          <th>date_arrivee</th>
+          <th>date_depart</th>
           <th>id_salle</th>
-          <th>commentaire</th>
-          <th>note</th>
-          <th>date_enregistrement</th>
+          <th>prix</th>
+          <th>Etat</th>
           <th>Actions</th>
         </tr>
 
         <?php
-        $liste_avis = $pdo->query("SELECT * from avis, membre, salle
-                                    WHERE avis.id_membre = membre.id_membre
-                                      AND avis.id_salle = salle.id_salle;");
+        $liste_produits = $pdo->query("SELECT * from produit, salle
+                                    WHERE produit.id_salle = salle.id_salle;");
 
-        while ($avis = $liste_avis->fetch(PDO::FETCH_ASSOC)) {
+        while ($produits = $liste_produits->fetch(PDO::FETCH_ASSOC)) {
           // on récupère les membres en bdd
 
 
 
 
           echo '<tr>';
-          echo '<td>' . $avis['id_avis'] . '</td>';
-          echo '<td>' . $avis['id_membre'] . ' - ' . $avis['pseudo'] . '</td>';
-          echo '<td>' . $avis['id_salle'] . ' - ' . $avis['titre'] . '</td>';
-          echo '<td>' . $avis['commentaire'] . '</td>';
-          echo '<td>' . $avis['note'] . '</td>';
-          echo '<td>' . $avis['date_enregistrement'] . '</td>';
+          echo '<td>' . $produits['id_produit'] . '</td>';
+          echo '<td>' . $produits['date_arrivee'] . '</td>';
+          echo '<td>' . $produits['date_depart'] . '</td>';
+          echo '<td>' . $produits['id_salle'] . ' - ' . $produits['titre'] . '</td>';
+          echo '<td>' . $produits['prix'] . ' € </td>';
+          echo '<td>' . $produits['etat'] . '</td>';
           echo '<td>';
-          echo '<a href="gestion_avis.php?action=modifier&id_avis=' . $avis['id_avis'] . '">';
+          /*
+          echo '<a href="gestion_avis.php?action=modifier&id_avis=' . $produits['id_avis'] . '">';
           echo '<i class="fas fa-exchange-alt"></i></a> ';
-          echo '<a href="gestion_avis.php?action=supprimer&id_avis=' . $avis['id_avis'] . '">';
+          echo '<a href="gestion_avis.php?action=supprimer&id_avis=' . $produits['id_avis'] . '">';
           echo '<i class="fas fa-trash-alt"></i></a>';
+          */
           echo '</td>';
           echo '</tr>';
         }
@@ -70,7 +71,7 @@ include 'inc/navbar.php';
     
     <div class="col-12 text-center">
       <br>
-      <h2>Modification d'un avis</h3>
+      <h2>Modification d'une Commande</h3>
         <p class="lead"><?php echo $msg; ?></p>
     </div>
   </div>
