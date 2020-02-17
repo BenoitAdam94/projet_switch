@@ -3,7 +3,7 @@
 // Connexion à la BDD
 $host_db = 'mysql:host=localhost;dbname=switch'; 
 $login = 'root'; 
-$password = ''; 
+$password = 'root'; 
 $options = array(
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING, 
 				PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8' 
@@ -22,7 +22,7 @@ define('URL', 'http://elephpant/projet_switch/'); // lien absolu racine du proje
 // Chemin racine du serveur
 define('SERVER_ROOT', $_SERVER['DOCUMENT_ROOT']);
 // Chemin racine du dossier du site depuis le serveur
-define('SITE_ROOT', '/projet_switch/');
+define('SITE_ROOT', '/');
 
 js('init_ok');
 
