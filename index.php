@@ -16,11 +16,22 @@ include 'inc/fonction.inc.php';
 $liste_categorie = $pdo->query("SELECT DISTINCT categorie FROM produit, salle WHERE produit.id_salle = salle.id_salle ORDER BY categorie");
 
 
+
+
 if(isset($_GET['categorie'])) {
   $choix_categorie = $_GET['categorie'];
-  $liste_produit = $pdo->prepare("SELECT * FROM produit,salle WHERE categorie = :categorie AND produit.id_salle = salle.id_salle ORDER BY date_arrivee");
+  $liste_produit = $pdo->prepare("SELECT * FROM produit, salle WHERE categorie = :categorie AND produit.id_salle = salle.id_salle ORDER BY date_arrivee");
 	$liste_produit->bindParam(':categorie', $choix_categorie, PDO::PARAM_STR);
-	$liste_produit->execute();	
+	$liste_produit->execute();
+
+} else if(isset($_GET['pricemin']) && isset($_GET['pricemin'])) {
+  $prixmin = $_GET['pricemin'];
+  $prixmax = $_GET['pricemax'];
+  $liste_produit = $pdo->prepare("SELECT * FROM produit, salle WHERE produit.id_salle = salle.id_salle AND prix > :prixmin AND prix < :prixmax ORDER BY date_arrivee");
+  $liste_produit->bindParam(':prixmin', $prixmin, PDO::PARAM_STR);
+  $liste_produit->bindParam(':prixmax', $prixmax, PDO::PARAM_STR);
+  $liste_produit->execute();
+
 } else {
   $liste_produit = $pdo->query("SELECT * FROM produit, salle WHERE produit.id_salle = salle.id_salle ORDER BY date_arrivee");
 }
@@ -60,9 +71,16 @@ include 'inc/navbar.php';
         </div>
         <h3 class="my-4">Prix</h3>
         <div class="list-group">
-          <a href="index.php?prix=eco" class="list-group-item">Eco (- de 500€)</a>
-          <a href="index.php?prix=normale" class="list-group-item">Normale (500€ a 1000€))</a>
-          <a href="index.php?prix=deluxe" class="list-group-item">Deluxe (1000€ et +)</a>
+          <p>
+          <label for="amount">Price range:</label>
+          <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        </p>
+        <div id="slider-range"></div>
+        <form>
+          <input id="pricemin" name="pricemin" type="hidden" value="<?= $prixmin ?>">
+          <input id="pricemax" name="pricemax" type="hidden" value="<?= $prixmax ?>">
+          <button class="mt-2" type="submit" id="pricerange" class="form-control btn btn-outline-dark">Choisir</button>
+        </form>
         </div>
         <h3 class="my-4">Période</h3>
         <div class="list-group">
@@ -127,3 +145,19 @@ include 'inc/navbar.php';
 
 include "inc/footer.php";
 ?>
+<script>
+  $( function() {
+    $( "#slider-range" ).slider({
+      range: true,
+      min: 0,
+      max: 1500,
+      values: [ <?= $prixmin ?>, <?= $prixmax ?> ],
+      slide: function( event, ui ) {
+        $( "#amount" ).val( "€" + ui.values[ 0 ] + " - €" + ui.values[ 1 ] );
+        $( "#pricemin").val(ui.values[ 0 ]);
+        $( "#pricemax").val(ui.values[ 1 ]);
+      }
+    });
+    $( "#amount" ).val( "€" + $( "#slider-range" ).slider( "values", 0 ) + " - €" + $( "#slider-range" ).slider( "values", 1 ) );
+  } );
+</script>

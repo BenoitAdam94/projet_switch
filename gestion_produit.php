@@ -57,10 +57,8 @@ if (
 	$prix = trim($_POST['prix']);
 
 
-  // transformation format date_arrivee
-  // format reçu par jQuery : 11/29/2016
-  // format attendu par PHP : 2016-11-29 09:00:00
-  // format attendu par PHP : YYYY-MM-DD
+  
+  
 
   
   if (empty($msg)) {
@@ -235,6 +233,9 @@ include 'inc/navbar.php';
 include "inc/footer.php";
 ?>
 <script>
+  // DATEPICKER
+  // format reçu par jQuery : 11/29/2016
+  // format attendu par PHP : 2016-11-29 09:00:00
   $(function() {
     $("#date_arrivee").datepicker({
         dateFormat: "yy-mm-dd 09:00:00"
