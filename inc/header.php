@@ -12,6 +12,8 @@
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- jQuery CSS -->
+  <link rel="stylesheet" href="css/jquery-ui.min.css">
 
   <!-- Custom styles for this template -->
   <link href="css/shop-homepage.css" rel="stylesheet">

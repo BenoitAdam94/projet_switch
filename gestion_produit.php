@@ -10,8 +10,88 @@ if (!user_is_admin()) {
   exit(); // bloque l'exécution du code 
 }
 
+//*********************************************************************
+//*********************************************************************
+// SUPPRESSION D'UN PRODUIT
+//*********************************************************************
+//*********************************************************************
+if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id_produit'])) {
+  $suppression = $pdo->prepare("DELETE FROM produit WHERE id_produit = :id_produit");
+  $suppression->bindParam(":id_produit", $_GET['id_produit'], PDO::PARAM_STR);
+  $suppression->execute();
+
+  // $_GET['action'] = 'affichage'; // pour provoquer l'affichage du tableau
+
+}
+
+
+// $id_produit = ''; // pour la modification
+$id_salle = "";
+$date_arrivee = "";
+$date_depart = "";
+$prix = "";
+
 $msg = '';
 
+dump($_POST);
+
+
+//*********************************************************************
+//*********************************************************************
+// ENREGISTREMENT & MODIFICATION DES PRODUITS
+//*********************************************************************
+//*********************************************************************
+if (
+  isset($_POST['id_salle']) &&
+	isset($_POST['date_arrivee']) &&
+	isset($_POST['date_depart']) &&
+	isset($_POST['prix'])
+) {
+  
+  js('test');
+  
+
+	$id_salle = trim($_POST['id_salle']);
+  $date_arrivee = trim($_POST['date_arrivee']);
+  $date_depart = trim($_POST['date_depart']);
+	$prix = trim($_POST['prix']);
+
+
+  // transformation format date_arrivee
+  // format reçu par jQuery : 11/29/2016
+  // format attendu par PHP : 2016-11-29 09:00:00
+  // format attendu par PHP : YYYY-MM-DD
+
+  
+  if (empty($msg)) {
+    js('if empty msg');
+
+		if (!empty($id_produit)) {
+      // si id_produit existe un UPDATE
+      js('if id_membre UPDATE');
+			
+			$enregistrement = $pdo->prepare("UPDATE produit SET id_salle = :id_salle, date_arrivee = :date_arrivee, date_depart = :date_depart, prix = :prix WHERE id_produit = :id_produit");
+			
+			$enregistrement->bindParam(":id_produit", $id_produit, PDO::PARAM_STR);
+      
+		} else {
+      // sinon un INSERT
+      js('if empty msg ELSE insert');
+			
+			$enregistrement = $pdo->prepare("INSERT INTO produit (id_produit, id_salle, date_arrivee, date_depart, prix)
+                                         VALUES (NULL, :id_salle, :date_arrivee, :date_depart, :prix)");
+		}
+
+
+
+		$enregistrement->bindParam(":id_salle", $id_salle, PDO::PARAM_STR);
+    $enregistrement->bindParam(":date_arrivee", $date_arrivee, PDO::PARAM_STR);
+		$enregistrement->bindParam(":date_depart", $date_depart, PDO::PARAM_STR);
+		$enregistrement->bindParam(":prix", $prix, PDO::PARAM_STR);
+		$enregistrement->execute();
+	}
+
+}
 
 
 include 'inc/header.php';
@@ -23,7 +103,7 @@ include 'inc/navbar.php';
 <div class="container">
   <!-- 1 rst row -->
   <div class="row">
-  
+
     <div class="col-12 text-center">
       <h2>Gestion des Produits</h2>
 
@@ -68,10 +148,10 @@ include 'inc/navbar.php';
         ?>
       </table>
     </div>
-    
+
     <div class="col-12 text-center">
       <br>
-      <h2>Modification d'une Commande</h3>
+      <h2>Modification d'un produit</h3>
         <p class="lead"><?php echo $msg; ?></p>
     </div>
   </div>
@@ -91,48 +171,40 @@ include 'inc/navbar.php';
 
 
 
-        <!-- Pseudo -->
+        <!-- Date d'arrivée -->
         <div class="form-group">
-          <label for="pseudo">Pseudo</label>
-          <input type="text" name="pseudo" id="pseudo" value="" class="form-control">
+          <label for="date_arrivee">Date d'arrivée</label>
+          <input type="text" class="form-control" id="date_arrivee" name ="date_arrivee" required>
         </div>
-        <!-- Mot de passe -->
+        <!-- Date de départ -->
         <div class="form-group">
-          <label for="motdepasse">Mot de passe</label>
-          <input type="text" name="motdepasse" id="motdepasse" value="" class="form-control">
-        </div>
-        <!-- Nom -->
-        <div class="form-group">
-          <label for="nom">Nom</label>
-          <input type="text" name="nom" id="nom" value="" class="form-control">
-        </div>
-        <!-- Prenom -->
-        <div class="form-group">
-          <label for="prenom">Prenom</label>
-          <input type="text" name="prenom" id="prenom" value="" class="form-control">
+          <label for="date_depart">Date de départ</label>
+          <input type="text" class="form-control" id="date_depart" name ="date_depart" required>
         </div>
       </div>
       <div class="col-6">
-        <!-- Email -->
+        <!-- Salle -->
         <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" name="email" id="email" value="" class="form-control">
-        </div>
-        <!-- Civilite -->
-        <div class="from-group">
-          <label for="civilite">Civilite</label>
-          <select name="civilite" id="civilite" class="form-control">
-            <option>Homme</option>
-            <option>Femme</option>
+          <label for="nom">Salle</label>
+          <select name="id_salle" id="id_salle" class="form-control">
+            <?php
+            $liste_salle = $pdo->query("SELECT * FROM salle");
+
+            while ($salle = $liste_salle->fetch(PDO::FETCH_ASSOC)) {
+              echo '<option value = "' . $salle['id_salle'] . '">';
+              echo $salle['id_salle'] . ' - ' . $salle['titre'] . ' - ';
+              echo $salle['adresse'] . ' - ' . $salle['cp'] . ' ' . $salle['ville'] . ' - ';
+              echo $salle['capacite'] . ' Personnes';
+              echo '</option>';
+            }
+            ?>
+            
           </select>
         </div>
-        <!-- Statut -->
-        <div class="from-group">
-          <label for="statut">Statut</label>
-          <select name="statut" id="statut" class="form-control">
-            <option>Membre</option>
-            <option>Admin</option>
-          </select>          
+        <!-- Tarif -->
+        <div class="form-group">
+          <label for="prix">Prix</label>
+          <input type="text" name="prix" id="prix" value="" class="form-control">
         </div>
         <br>
         <!-- Submit -->
@@ -162,3 +234,14 @@ include 'inc/navbar.php';
 
 include "inc/footer.php";
 ?>
+<script>
+  $(function() {
+    $("#date_arrivee").datepicker({
+        dateFormat: "yy-mm-dd 09:00:00"
+    });
+    $("#date_depart").datepicker({
+    dateFormat: "yy-mm-dd 19:00:00"
+    });
+    
+  });
+</script>
