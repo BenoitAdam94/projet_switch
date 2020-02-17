@@ -29,7 +29,7 @@ include 'inc/navbar.php';
 
       <table>
         <tr>
-          <th>id_avis</th>
+          <th>id avis</th>
           <th>id_membre</th>
           <th>id_salle</th>
           <th>commentaire</th>
@@ -39,7 +39,9 @@ include 'inc/navbar.php';
         </tr>
 
         <?php
-        $liste_avis = $pdo->query("SELECT * FROM avis");
+        $liste_avis = $pdo->query("SELECT * from avis, membre, salle
+                                    WHERE avis.id_membre = membre.id_membre
+                                      AND avis.id_salle = salle.id_salle;");
 
         while ($avis = $liste_avis->fetch(PDO::FETCH_ASSOC)) {
           // on récupère les membres en bdd
@@ -49,8 +51,8 @@ include 'inc/navbar.php';
 
           echo '<tr>';
           echo '<td>' . $avis['id_avis'] . '</td>';
-          echo '<td>' . $avis['id_membre'] . '</td>';
-          echo '<td>' . $avis['id_salle'] . '</td>';
+          echo '<td>' . $avis['id_membre'] . ' - ' . $avis['pseudo'] . '</td>';
+          echo '<td>' . $avis['id_salle'] . ' - ' . $avis['titre'] . '</td>';
           echo '<td>' . $avis['commentaire'] . '</td>';
           echo '<td>' . $avis['note'] . '</td>';
           echo '<td>' . $avis['date_enregistrement'] . '</td>';

@@ -29,7 +29,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id
 //*********************************************************************
 //*********************************************************************
 
-
+$id_salle = '';
 $titre = '';
 $description = '';
 $photo = '';
@@ -39,7 +39,6 @@ $pays = '';
 $ville = '';
 $adresse = '';
 $cp = '';
-$photo_bdd = '';
 $nom_photo = '';
 $reference = rand(0, 9999);
 
@@ -74,7 +73,7 @@ if (
   $cp = trim($_POST['cp']);
 
   if (!empty($_POST['photo_actuelle'])) {
-    $photo_bdd = $_POST['photo_actuelle'];
+    $nom_photo = $_POST['photo_actuelle'];
     js('2if');
   }
 
@@ -119,19 +118,20 @@ if (
         // dump($msg);
       }
     }
-
-    if ($nom_photo === '') {
+    
+    /*
+    if (empty($_FILES['photo']['name']) && $nom_photo === '') {
       $msg .= '<div class="alert alert-danger mt-3">Veuillez attacher une piece jointe</div>';
     }
-
+    */
 
 
     if (empty($msg)) {
-      if (!empty($id_salle)) {
+      if (!empty($_POST['id_salle'])) {
         // si $id_article n'est pas vide c'est un UPDATE
-        $enregistrement = $pdo->prepare("UPDATE salle SET titre = :titre, description = :description , photo = :photo, pays = :pays, ville = :ville, adresse = :adresse, cp = :prix, capacite = :capacite, capacite = :capacite, categorie = :categorie WHERE id_salle = :id_salle");
+        $enregistrement = $pdo->prepare("UPDATE salle SET titre = :titre, description = :description , photo = :photo, pays = :pays, ville = :ville, adresse = :adresse, cp = :cp, capacite = :capacite, categorie = :categorie WHERE id_salle = :id_salle");
         // on rajoute le bindParam pour l'id_salle car => modification
-        $enregistrement->bindParam(":id_salle", $id_salle, PDO::PARAM_STR);
+        $enregistrement->bindParam(":id_salle", $_POST['id_salle'], PDO::PARAM_STR);
       } else {
         // sinon un INSERT
         $enregistrement = $pdo->prepare("INSERT INTO salle (id_salle, titre, description, photo, pays, ville, adresse, cp, capacite, categorie) VALUES (NULL, :titre, :description, :photo, :pays, :ville, :adresse, :cp, :capacite, :categorie)");
@@ -171,26 +171,27 @@ if (
 //*********************************************************************
 if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_salle'])) {
 
-  $infos_article = $pdo->prepare("SELECT * FROM salle WHERE id_salle = :id_salle");
-  $infos_article->bindparam(":id_salle", $_GET['id_salle'], PDO::PARAM_STR);
-  $infos_article->execute();
+  $infos_salle = $pdo->prepare("SELECT * FROM salle WHERE id_salle = :id_salle");
+  $infos_salle->bindparam(":id_salle", $_GET['id_salle'], PDO::PARAM_STR);
+  $infos_salle->execute();
 
 
-  if ($infos_article->rowCount() > 0) {
-    $article_actuel = $infos_article->fetch(PDO::FETCH_ASSOC);
+  if ($infos_salle->rowCount() > 0) {
+    $salle_actuel = $infos_salle->fetch(PDO::FETCH_ASSOC);
 
-    $id_salle = $article_actuel['id_salle'];
-    $titre = $article_actuel['titre'];
-    $categorie = $article_actuel['categorie'];
-    $capacite = $article_actuel['capacite'];
-    $pays = $article_actuel['pays'];
-    $ville = $article_actuel['ville'];
-    $cp = $article_actuel['cp'];
-    $adresse = $article_actuel['adresse'];
-    $description = $article_actuel['description'];
-    $nom_photo = $article_actuel['photo'];
+    $id_salle = $salle_actuel['id_salle'];
+    $titre = $salle_actuel['titre'];
+    $categorie = $salle_actuel['categorie'];
+    $capacite = $salle_actuel['capacite'];
+    $pays = $salle_actuel['pays'];
+    $ville = $salle_actuel['ville'];
+    $cp = $salle_actuel['cp'];
+    $adresse = $salle_actuel['adresse'];
+    $description = $salle_actuel['description'];
+    $photo_actuelle = $salle_actuel['photo'];
+    dump($photo_actuelle);
 
-    $msg .= 'Modification de ' . $id_salle . ' ' . $titre;
+    // $msg .= 'Modification de ' . $id_salle . ' ' . $titre;
   }
 }
 
@@ -278,7 +279,7 @@ include 'inc/navbar.php';
 
 
       <div class="col-6">
-        <!-- <input type="hidden" name="id_article" value="<?= $id_salle; ?>"> -->
+        <input type="hidden" name="id_salle" value="<?= $id_salle; ?>">
         <div class="form-group">
           <label for="titre">Titre</label>
           <input type="text" name="titre" id="titre" value="<?= $titre; ?>" class="form-control">
@@ -289,13 +290,13 @@ include 'inc/navbar.php';
         </div>
         <?php
         // récupération de la photo de l'article en cas de modification. Pour la consever si l'utilisateur n'en charge pas une nouvelle
-        /*if (!empty($nom_photo)) {
+        if (!empty($photo_actuelle)) {
 							echo '<div class="form-group text-center">';
 							echo '<label>Photo actuelle</label><hr>';
-							echo '<img src="img/' . $nom_photo . '" class="w-25 img-thumbnail" alt="image de l\'article">';
-							echo '<input type="hidden" name="photo_actuelle" value="' . $nom_photo . '">';
+							echo '<img src="img/' . $photo_actuelle . '" class="w-25 img-thumbnail" alt="image de l\'article">';
+							echo '<input name="photo_actuelle" value="' . $photo_actuelle . '">';
 							echo '</div>';
-						}*/
+						}
         ?>
         <div class="form-group">
           <label for="photo">Photo</label>
