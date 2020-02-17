@@ -10,7 +10,25 @@ if (!user_is_admin()) {
   exit(); // bloque l'exécution du code 
 }
 
+//*********************************************************************
+//*********************************************************************
+// SUPPRESSION D'UN MEMBRE
+//*********************************************************************
+//*********************************************************************
+if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id_membre'])) {
+	$suppression = $pdo->prepare("DELETE FROM membre WHERE id_membre = :id_membre");
+	$suppression->bindParam(":id_membre", $_GET['id_membre'], PDO::PARAM_STR);
+	$suppression->execute();
+
+	$_GET['action'] = 'affichage'; // pour provoquer l'affichage du tableau
+
+}
+
+
+
 $msg = '';
+
+
 
 
 
@@ -24,7 +42,7 @@ include 'inc/navbar.php';
   <!-- 1 rst row -->
   <div class="row">
     <div class="col-12 text-center">
-      <h2>Gestion des salles</h2>
+      <h2>Gestion des membres</h2>
 
       <table>
         <tr>
@@ -79,14 +97,14 @@ include 'inc/navbar.php';
 
 
 
-  <!-- récupération de l'id_article pour la modification -->
+  <!-- récupération de l'id_membre pour la modification -->
 
   <form method="post" action="" enctype="multipart/form-data">
     <div class="row">
 
 
       <div class="col-6">
-        <!-- <input type="hidden" name="id_article" value="<?= '$id_membre'; ?>"> -->
+        <!-- <input type="hidden" name="id_membre" value="<?= '$id_membre'; ?>"> -->
 
 
 
