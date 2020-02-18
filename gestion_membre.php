@@ -57,7 +57,6 @@ $msg = '';
 //*********************************************************************
 if (
 	isset($_POST['pseudo']) &&
-  isset($_POST['mdp']) &&
 	isset($_POST['nom']) &&
 	isset($_POST['prenom']) &&
 	isset($_POST['email']) &&
@@ -69,12 +68,18 @@ if (
 
   $id_membre = trim($_POST['id_membre']);
 	$pseudo = trim($_POST['pseudo']);
-  $mdp = trim($_POST['mdp']);
 	$nom = trim($_POST['nom']);
 	$prenom = trim($_POST['prenom']);
 	$email = trim($_POST['email']);
 	$civilite = trim($_POST['civilite']);
 	$statut = trim($_POST['statut']);
+
+  dump($_POST);
+
+
+  if(empty($pseudo) || empty($nom) || empty($prenom) || empty($prenom) || empty($email)) {
+    $msg .= 'Un champ est vide';
+  }
 	
 
   if (empty($msg)) {
@@ -85,21 +90,20 @@ if (
       js('if id_membre ELSE update');
 			
 			$enregistrement = $pdo->prepare("UPDATE membre SET pseudo = :pseudo, mdp = :mdp, nom = :nom, prenom = :prenom, email = :email, civilite = :civilite, statut = :statut, date_enregistrement = :date_enregistrement WHERE id_membre = :id_membre");
-			
 			$enregistrement->bindParam(":id_membre", $id_membre, PDO::PARAM_STR);
       
 		} else {
       // sinon un INSERT
       js('if empty msg ELSE insert');
-			
+			$mdp = trim($_POST['mdp']);
       $mdp = password_hash($mdp, PASSWORD_DEFAULT);
 			$enregistrement = $pdo->prepare("INSERT INTO membre (id_membre, pseudo, mdp, nom, prenom, email, civilite, statut, date_enregistrement) VALUES (NULL, :pseudo, :mdp, :nom, :prenom, :email, :civilite, :statut, :date_enregistrement)");
+      $enregistrement->bindParam(":mdp", $mdp, PDO::PARAM_STR);
 		}
 
 
 
 		$enregistrement->bindParam(":pseudo", $pseudo, PDO::PARAM_STR);
-    $enregistrement->bindParam(":mdp", $mdp, PDO::PARAM_STR);
 		$enregistrement->bindParam(":nom", $nom, PDO::PARAM_STR);
 		$enregistrement->bindParam(":prenom", $prenom, PDO::PARAM_STR);
 		$enregistrement->bindParam(":email", $email, PDO::PARAM_STR);
@@ -201,14 +205,14 @@ include 'inc/navbar.php';
 
     <div class="col-12 text-center">
       <h2>Ajouter un membre</h3>
-        <p class="lead"><?php echo $msg; ?></p>
+        <p class="lead red"><?php echo $msg; ?></p>
     </div>
   </div>
 
 
   <!-- récupération de l'id_membre pour la modification -->
 
-  <form method="post" action="" enctype="multipart/form-data">
+  <form method="post" action="gestion_membre.php" enctype="multipart/form-data">
     <div class="row">
 
       <div class="col-6">
@@ -309,6 +313,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'newpassword' && !empty($_GET['
   $update_password->bindParam(":id_membre", $_GET['id_membre'], PDO::PARAM_STR);
   $update_password->bindParam(":mdp", $mdp, PDO::PARAM_STR);
   $update_password->execute();
+  $_GET['action'] = 'affichage';
 
 }
 

@@ -17,3 +17,7 @@ table, tr, td, th{
 table{
   width: 100%;;
 }
+
+.red {
+  color: red;
+}

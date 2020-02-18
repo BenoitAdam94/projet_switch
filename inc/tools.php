@@ -17,6 +17,12 @@ function sep() {
     echo '<hr>';
 }
 
+function printeur($dump) {
+    echo '<pre>';
+    print_r($dump);
+    echo '</pre>';
+}
+
 function separateur() {
     echo '<hr><hr><hr>';
 }
