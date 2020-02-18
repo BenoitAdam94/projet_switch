@@ -15,8 +15,13 @@ include 'inc/fonction.inc.php';
 // Categorie = Bureau / Formation / Réunion
 $liste_categorie = $pdo->query("SELECT DISTINCT categorie FROM produit, salle WHERE produit.id_salle = salle.id_salle ORDER BY categorie");
 
+if(empty($prixmin)) {
+  $prixmin = '0';
+}
 
-
+if(empty($prixmax)) {
+  $prixmax = '1500';
+}
 
 if(isset($_GET['categorie'])) {
   $choix_categorie = $_GET['categorie'];
@@ -38,6 +43,7 @@ if(isset($_GET['categorie'])) {
 
 
   
+
 
 include 'inc/header.php';
 include 'inc/navbar.php';
@@ -77,8 +83,8 @@ include 'inc/navbar.php';
         </p>
         <div id="slider-range"></div>
         <form>
-          <input id="pricemin" name="pricemin" type="hidden" value="<?= $prixmin ?>">
-          <input id="pricemax" name="pricemax" type="hidden" value="<?= $prixmax ?>">
+          <input id="pricemin" name="pricemin" type="hidden" value="">
+          <input id="pricemax" name="pricemax" type="hidden" value="">
           <button class="mt-2" type="submit" id="pricerange" class="form-control btn btn-outline-dark">Choisir</button>
         </form>
         </div>
@@ -151,7 +157,7 @@ include "inc/footer.php";
       range: true,
       min: 0,
       max: 1500,
-      values: [ <?= $prixmin ?>, <?= $prixmax ?> ],
+      values: [ <?= $prixmin; ?>, <?= $prixmax; ?> ],
       slide: function( event, ui ) {
         $( "#amount" ).val( "€" + ui.values[ 0 ] + " - €" + ui.values[ 1 ] );
         $( "#pricemin").val(ui.values[ 0 ]);

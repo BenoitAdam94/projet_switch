@@ -35,11 +35,17 @@ function info($js) {
     echo '</script>';
 }
 
-// Javascript Alert for PHP
+// Javascript Alert New Mdp for PHP
 
 function alert($js) {
     echo '<script>';
-    echo "alert('Nouveau mot de passe == ' + '$js');";
+    echo "alert('$js')";
+    echo '</script>';
+}
+
+function alertnewmdp($alert_pseudo,$alert_mdp) {
+    echo '<script>';
+    echo "alert('Nouveau mot de passe pour ' + '$alert_pseudo' + ' : ' + '$alert_mdp')";
     echo '</script>';
 }
 

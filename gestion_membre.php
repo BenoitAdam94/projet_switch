@@ -138,28 +138,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
 	}
 }
 
-//*********************************************************************
-//*********************************************************************
-// Generation d'un nouveau mot de passe
-//*********************************************************************
-//*********************************************************************
-
-
-if (isset($_GET['action']) && $_GET['action'] == 'newpassword' && !empty($_GET['id_membre'])) {
-
-  $newpassword = genererChaineAleatoire(10);
-  
-  dump($newpassword);
-  alert($newpassword);
-  $mdp = password_hash($newpassword, PASSWORD_DEFAULT);
-  $update_password = $pdo->prepare("UPDATE membre SET mdp = :mdp WHERE id_membre = :id_membre");
-  $update_password->bindParam(":id_membre", $_GET['id_membre'], PDO::PARAM_STR);
-  $update_password->bindParam(":mdp", $mdp, PDO::PARAM_STR);
-  $update_password->execute();
-
-}
-
-
 
 include 'inc/header.php';
 include 'inc/navbar.php';
@@ -207,8 +185,11 @@ include 'inc/navbar.php';
           echo '<td>';
           echo '<a title="Modifier" href="gestion_membre.php?action=modifier&id_membre=' . $membre['id_membre'] . '">';
           echo '<i class="fas fa-exchange-alt fa-2x"></i></a> ';
-          echo '<a title="Génerer Mot de passe" href="gestion_membre.php?action=newpassword&id_membre=' . $membre['id_membre'] . '">';
+
+          echo '<a title="Génerer Mot de passe" ';
+          echo 'href="gestion_membre.php?action=newpassword&id_membre=' . $membre['id_membre'] . '&pseudo=' . $membre['pseudo'] . '">';
           echo '<i class="fas fa-key fa-2x"></i></a> ';
+
           echo '<a title="Supprimer" href="gestion_membre.php?action=supprimer&id_membre=' . $membre['id_membre'] . '">';
           echo '<i class="fas fa-trash-alt fa-2x"></i></a>';
           echo '</td>';
@@ -238,7 +219,7 @@ include 'inc/navbar.php';
         <!-- Pseudo -->
         <div class="form-group">
           <label for="pseudo">Pseudo</label>
-          <input type="text" name="pseudo" id="pseudo" value="<?= $pseudo ?>" class="form-control">
+          <input type="text" name="pseudo" id="pseudo" value="<?= $pseudo; ?>" class="form-control">
         </div>
         <!-- Mot de passe -->
         <?php if(empty($mdp)) { ?>
@@ -306,6 +287,32 @@ include 'inc/navbar.php';
 <!-- /.container -->
 
 <?php
+
+
+//*********************************************************************
+//*********************************************************************
+// Generation d'un nouveau mot de passe
+//*********************************************************************
+//*********************************************************************
+
+
+if (isset($_GET['action']) && $_GET['action'] == 'newpassword' && !empty($_GET['id_membre'])) {
+
+  $newpassword = genererChaineAleatoire(8);
+  
+  // dump($newpassword);  
+  
+  alertnewmdp($_GET['pseudo'], $newpassword);
+  // alert($newpassword);
+  $mdp = password_hash($newpassword, PASSWORD_DEFAULT);
+  $update_password = $pdo->prepare("UPDATE membre SET mdp = :mdp WHERE id_membre = :id_membre");
+  $update_password->bindParam(":id_membre", $_GET['id_membre'], PDO::PARAM_STR);
+  $update_password->bindParam(":mdp", $mdp, PDO::PARAM_STR);
+  $update_password->execute();
+
+}
+
+
 
 include "inc/footer.php";
 ?>
