@@ -16,16 +16,23 @@ if (!user_is_admin()) {
 //*********************************************************************
 //*********************************************************************
 if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id_produit'])) {
+
+  $pdo->query("SET FOREIGN_KEY_CHECKS=0");
+
+  
+
   $suppression = $pdo->prepare("DELETE FROM produit WHERE id_produit = :id_produit");
   $suppression->bindParam(":id_produit", $_GET['id_produit'], PDO::PARAM_STR);
   $suppression->execute();
+
+  $pdo->query("SET FOREIGN_KEY_CHECKS=1");
 
   // $_GET['action'] = 'affichage'; // pour provoquer l'affichage du tableau
 
 }
 
 
-// $id_produit = ''; // pour la modification
+$id_produit = ''; // pour la modification
 $id_salle = "";
 $date_arrivee = "";
 $date_depart = "";
@@ -56,7 +63,7 @@ if (
   $date_depart = trim($_POST['date_depart']);
 	$prix = trim($_POST['prix']);
 
-
+  $id_produit = trim($_POST['id_produit']);
   
   
 
@@ -90,6 +97,42 @@ if (
 	}
 
 }
+
+
+
+//*********************************************************************
+//*********************************************************************
+// MODIFICATION : RECUPERATION DES INFOS DE L'ARTICLE EN BDD
+//*********************************************************************
+//*********************************************************************
+if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_produit'])) {
+
+  $infos_produit = $pdo->prepare("SELECT * FROM produit WHERE id_produit = :id_produit");
+  $infos_produit->bindparam(":id_produit", $_GET['id_produit'], PDO::PARAM_STR);
+  $infos_produit->execute();
+
+
+  if ($infos_produit->rowCount() > 0) {
+    $produit_actuel = $infos_produit->fetch(PDO::FETCH_ASSOC);
+  
+    $id_produit = $produit_actuel['id_produit'];
+    $id_salle = $produit_actuel['id_salle'];
+    $date_arrivee = $produit_actuel['date_arrivee'];
+    $date_depart = $produit_actuel['date_depart'];
+    $prix = $produit_actuel['prix'];
+    
+    
+
+    // $msg .= 'Modification de ' . $id_salle . ' ' . $titre;
+  }
+}
+
+//*********************************************************************
+//*********************************************************************
+// \FIN MODIFICATION : RECUPERATION DES INFOS DE L'ARTICLE EN BDD
+//*********************************************************************
+//*********************************************************************
+
 
 
 include 'inc/header.php';
@@ -134,12 +177,13 @@ include 'inc/navbar.php';
           echo '<td>' . $produits['prix'] . ' € </td>';
           echo '<td>' . $produits['etat'] . '</td>';
           echo '<td>';
-          /*
-          echo '<a href="gestion_avis.php?action=modifier&id_avis=' . $produits['id_avis'] . '">';
-          echo '<i class="fas fa-exchange-alt"></i></a> ';
-          echo '<a href="gestion_avis.php?action=supprimer&id_avis=' . $produits['id_avis'] . '">';
-          echo '<i class="fas fa-trash-alt"></i></a>';
-          */
+          
+          echo '<a title="modifier" ';
+          echo 'href="gestion_produit.php?action=modifier&id_produit=' . $produits['id_produit'] . '&id_salle=' . $produits['id_salle'] . '">';
+          echo '<i class="fas fa-exchange-alt fa-lg"></i></a> ';
+          echo '<a title="supprimer" href="gestion_produit.php?action=supprimer&id_produit=' . $produits['id_produit'] . '">';
+          echo '<i class="fas fa-trash-alt fa-lg"></i></a>';
+          
           echo '</td>';
           echo '</tr>';
         }
@@ -165,19 +209,19 @@ include 'inc/navbar.php';
 
 
       <div class="col-6">
-        <!-- <input type="hidden" name="id_article" value="<?= '$id_membre'; ?>"> -->
+        <input type="hidden" name="id_produit" value="<?= $id_produit; ?>">
 
 
 
         <!-- Date d'arrivée -->
         <div class="form-group">
           <label for="date_arrivee">Date d'arrivée</label>
-          <input type="text" class="form-control" id="date_arrivee" name ="date_arrivee" required>
+          <input type="text" class="form-control" id="date_arrivee" name ="date_arrivee" value="<?= $date_arrivee; ?>" required>
         </div>
         <!-- Date de départ -->
         <div class="form-group">
           <label for="date_depart">Date de départ</label>
-          <input type="text" class="form-control" id="date_depart" name ="date_depart" required>
+          <input type="text" class="form-control" id="date_depart" name ="date_depart" value="<?= $date_depart; ?>" required>
         </div>
       </div>
       <div class="col-6">
@@ -189,7 +233,15 @@ include 'inc/navbar.php';
             $liste_salle = $pdo->query("SELECT * FROM salle");
 
             while ($salle = $liste_salle->fetch(PDO::FETCH_ASSOC)) {
-              echo '<option value = "' . $salle['id_salle'] . '">';
+
+              
+
+              echo '<option ';
+              // Option "selected" pour la modification
+              if($salle['id_salle'] == $_GET['id_salle']) { echo 'selected '; }
+              // Value
+              echo 'value = "' . $salle['id_salle'] . '">';
+
               echo $salle['id_salle'] . ' - ' . $salle['titre'] . ' - ';
               echo $salle['adresse'] . ' - ' . $salle['cp'] . ' ' . $salle['ville'] . ' - ';
               echo $salle['capacite'] . ' Personnes';
@@ -202,7 +254,7 @@ include 'inc/navbar.php';
         <!-- Tarif -->
         <div class="form-group">
           <label for="prix">Prix</label>
-          <input type="text" name="prix" id="prix" value="" class="form-control">
+          <input type="text" name="prix" id="prix" value="<?= $prix; ?>" class="form-control">
         </div>
         <br>
         <!-- Submit -->

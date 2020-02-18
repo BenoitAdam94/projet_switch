@@ -128,7 +128,7 @@ if (
 
     if (empty($msg)) {
       if (!empty($_POST['id_salle'])) {
-        // si $id_article n'est pas vide c'est un UPDATE
+        // si $id_salle n'est pas vide c'est un UPDATE
         $enregistrement = $pdo->prepare("UPDATE salle SET titre = :titre, description = :description , photo = :photo, pays = :pays, ville = :ville, adresse = :adresse, cp = :cp, capacite = :capacite, categorie = :categorie WHERE id_salle = :id_salle");
         // on rajoute le bindParam pour l'id_salle car => modification
         $enregistrement->bindParam(":id_salle", $_POST['id_salle'], PDO::PARAM_STR);
