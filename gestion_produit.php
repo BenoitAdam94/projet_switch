@@ -19,7 +19,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id
 
   $pdo->query("SET FOREIGN_KEY_CHECKS=0");
 
-  
+
 
   $suppression = $pdo->prepare("DELETE FROM produit WHERE id_produit = :id_produit");
   $suppression->bindParam(":id_produit", $_GET['id_produit'], PDO::PARAM_STR);
@@ -50,52 +50,50 @@ dump($_POST);
 //*********************************************************************
 if (
   isset($_POST['id_salle']) &&
-	isset($_POST['date_arrivee']) &&
-	isset($_POST['date_depart']) &&
-	isset($_POST['prix'])
+  isset($_POST['date_arrivee']) &&
+  isset($_POST['date_depart']) &&
+  isset($_POST['prix'])
 ) {
-  
-  js('test');
-  
 
-	$id_salle = trim($_POST['id_salle']);
+  js('test');
+
+
+  $id_salle = trim($_POST['id_salle']);
   $date_arrivee = trim($_POST['date_arrivee']);
   $date_depart = trim($_POST['date_depart']);
-	$prix = trim($_POST['prix']);
+  $prix = trim($_POST['prix']);
 
   $id_produit = trim($_POST['id_produit']);
-  
-  
 
-  
+
+
+
   if (empty($msg)) {
     js('if empty msg');
 
-		if (!empty($id_produit)) {
+    if (!empty($id_produit)) {
       // si id_produit existe un UPDATE
       js('if id_membre UPDATE');
-			
-			$enregistrement = $pdo->prepare("UPDATE produit SET id_salle = :id_salle, date_arrivee = :date_arrivee, date_depart = :date_depart, prix = :prix WHERE id_produit = :id_produit");
-			
-			$enregistrement->bindParam(":id_produit", $id_produit, PDO::PARAM_STR);
-      
-		} else {
+
+      $enregistrement = $pdo->prepare("UPDATE produit SET id_salle = :id_salle, date_arrivee = :date_arrivee, date_depart = :date_depart, prix = :prix WHERE id_produit = :id_produit");
+
+      $enregistrement->bindParam(":id_produit", $id_produit, PDO::PARAM_STR);
+    } else {
       // sinon un INSERT
       js('if empty msg ELSE insert');
-			
-			$enregistrement = $pdo->prepare("INSERT INTO produit (id_produit, id_salle, date_arrivee, date_depart, prix)
+
+      $enregistrement = $pdo->prepare("INSERT INTO produit (id_produit, id_salle, date_arrivee, date_depart, prix)
                                          VALUES (NULL, :id_salle, :date_arrivee, :date_depart, :prix)");
-		}
+    }
 
 
 
-		$enregistrement->bindParam(":id_salle", $id_salle, PDO::PARAM_STR);
+    $enregistrement->bindParam(":id_salle", $id_salle, PDO::PARAM_STR);
     $enregistrement->bindParam(":date_arrivee", $date_arrivee, PDO::PARAM_STR);
-		$enregistrement->bindParam(":date_depart", $date_depart, PDO::PARAM_STR);
-		$enregistrement->bindParam(":prix", $prix, PDO::PARAM_STR);
-		$enregistrement->execute();
-	}
-
+    $enregistrement->bindParam(":date_depart", $date_depart, PDO::PARAM_STR);
+    $enregistrement->bindParam(":prix", $prix, PDO::PARAM_STR);
+    $enregistrement->execute();
+  }
 }
 
 
@@ -114,14 +112,14 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
 
   if ($infos_produit->rowCount() > 0) {
     $produit_actuel = $infos_produit->fetch(PDO::FETCH_ASSOC);
-  
+
     $id_produit = $produit_actuel['id_produit'];
     $id_salle = $produit_actuel['id_salle'];
     $date_arrivee = $produit_actuel['date_arrivee'];
     $date_depart = $produit_actuel['date_depart'];
     $prix = $produit_actuel['prix'];
-    
-    
+
+
 
     // $msg .= 'Modification de ' . $id_salle . ' ' . $titre;
   }
@@ -177,13 +175,13 @@ include 'inc/navbar.php';
           echo '<td>' . $produits['prix'] . ' € </td>';
           echo '<td>' . $produits['etat'] . '</td>';
           echo '<td>';
-          
+
           echo '<a title="modifier" ';
           echo 'href="gestion_produit.php?action=modifier&id_produit=' . $produits['id_produit'] . '&id_salle=' . $produits['id_salle'] . '">';
           echo '<i class="fas fa-exchange-alt fa-lg"></i></a> ';
           echo '<a title="supprimer" href="gestion_produit.php?action=supprimer&id_produit=' . $produits['id_produit'] . '">';
           echo '<i class="fas fa-trash-alt fa-lg"></i></a>';
-          
+
           echo '</td>';
           echo '</tr>';
         }
@@ -193,7 +191,7 @@ include 'inc/navbar.php';
 
     <div class="col-12 text-center">
       <br>
-      <h2>Modification d'un produit</h3>
+      <h2>Ajout/Modification d'un produit</h3>
         <p class="lead"><?php echo $msg; ?></p>
     </div>
   </div>
@@ -209,19 +207,29 @@ include 'inc/navbar.php';
 
 
       <div class="col-6">
-        <input type="hidden" name="id_produit" value="<?= $id_produit; ?>">
+        <div class="form-group">
+        <label for="id_produit">Produit actuel :</label>
+        <!-- affichage du produit actuel ou de "nouveau produit" si vide -->
+        <?php
+        if(empty($id_produit)) {
+          echo 'Nouveau produit';
+          echo '<input type="hidden" name="id_produit" value="">';
+        } else { ?>
+        <input name="id_produit" value="<?= $id_produit; ?>">
+        <?php } ?>
+        </div>
 
 
 
         <!-- Date d'arrivée -->
         <div class="form-group">
           <label for="date_arrivee">Date d'arrivée</label>
-          <input type="text" class="form-control" id="date_arrivee" name ="date_arrivee" value="<?= $date_arrivee; ?>" required>
+          <input type="text" class="form-control" id="date_arrivee" name="date_arrivee" value="<?= $date_arrivee; ?>" required>
         </div>
         <!-- Date de départ -->
         <div class="form-group">
           <label for="date_depart">Date de départ</label>
-          <input type="text" class="form-control" id="date_depart" name ="date_depart" value="<?= $date_depart; ?>" required>
+          <input type="text" class="form-control" id="date_depart" name="date_depart" value="<?= $date_depart; ?>" required>
         </div>
       </div>
       <div class="col-6">
@@ -234,11 +242,13 @@ include 'inc/navbar.php';
 
             while ($salle = $liste_salle->fetch(PDO::FETCH_ASSOC)) {
 
-              
+
 
               echo '<option ';
               // Option "selected" pour la modification
-              if($salle['id_salle'] == $_GET['id_salle']) { echo 'selected '; }
+              if (!empty($_GET['id_salle']) && ($salle['id_salle'] == $_GET['id_salle'])) {
+                echo 'selected ';
+              }
               // Value
               echo 'value = "' . $salle['id_salle'] . '">';
 
@@ -248,7 +258,7 @@ include 'inc/navbar.php';
               echo '</option>';
             }
             ?>
-            
+
           </select>
         </div>
         <!-- Tarif -->
@@ -290,11 +300,11 @@ include "inc/footer.php";
   // format attendu par PHP : 2016-11-29 09:00:00
   $(function() {
     $("#date_arrivee").datepicker({
-        dateFormat: "yy-mm-dd 09:00:00"
+      dateFormat: "yy-mm-dd 09:00:00"
     });
     $("#date_depart").datepicker({
-    dateFormat: "yy-mm-dd 19:00:00"
+      dateFormat: "yy-mm-dd 19:00:00"
     });
-    
+
   });
 </script>
