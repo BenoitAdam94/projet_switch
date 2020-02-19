@@ -43,11 +43,6 @@ $nom_photo = '';
 $reference = rand(0, 9999);
 
 
-
-// dump($_SESSION);
-
-
-
 // on controle l'existence des champs du formulaire	
 if (
   isset($_POST['titre']) &&
@@ -59,10 +54,6 @@ if (
   isset($_POST['adresse']) &&
   isset($_POST['cp'])
 ) {
-
-  js('1isset');
-
-  // echo 'TEST';
   $titre = trim($_POST['titre']);
   $description = trim($_POST['description']);
   $capacite = trim($_POST['capacite']);
@@ -74,19 +65,16 @@ if (
 
   if (!empty($_POST['photo_actuelle'])) {
     $nom_photo = $_POST['photo_actuelle'];
-    js('2if');
   }
 
   $verif_caractere = preg_match('#^[a-zA-Z0-9._-]+$#', $titre);
 
   if (!$verif_caractere && !empty($titre)) {
-    // Message d'erreur
     $msg .= '<div class="alert alert-danger mt-3">Titre invalide, caractères autorisés : a-z et de 0-9</div>';
   }
 
   // Taille titre entre 4 et 14
   if (iconv_strlen($titre) < 4 || iconv_strlen($titre) > 14) {
-    // Message d'erreur
     $msg .= '<div class="alert alert-danger mt-3">titre invalide, le titre doit avoir entre 4 et 14 caractères inclus</div>';
   }
 
@@ -94,7 +82,6 @@ if (
 
   // S'il n'y pas eu d'erreur au préalable, on doit vérifier si le titre existe déjà dans la BDD
   if (empty($msg)) {
-    js('3msgempty');
     // si la variable $msg est vide, alors il n'y a pas eu d'erreur dans nos controles.
 
     // on vérifie si le titre est disponible.
@@ -108,22 +95,16 @@ if (
       $msg .= '<div class="alert alert-danger mt-3">Vous venez deffectuer une modification</div>';
     } else {*/
 
-    js('else');
 
     if (!empty($_FILES['photo']['name'])) {
       $nom_photo = verif_photo_pj();
-      dump($nom_photo);
+      
       if ($nom_photo === false) {
         $msg .= '<div class="alert alert-danger mt-3">Attention, le format de la photo est invalide, extensions autorisées : jpg, jpeg, png, gif.</div>';
-        // dump($msg);
       }
     }
     
-    /*
-    if (empty($_FILES['photo']['name']) && $nom_photo === '') {
-      $msg .= '<div class="alert alert-danger mt-3">Veuillez attacher une piece jointe</div>';
-    }
-    */
+ 
 
 
     if (empty($msg)) {
@@ -189,9 +170,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
     $adresse = $salle_actuel['adresse'];
     $description = $salle_actuel['description'];
     $photo_actuelle = $salle_actuel['photo'];
-    dump($photo_actuelle);
-
-    // $msg .= 'Modification de ' . $id_salle . ' ' . $titre;
+    
   }
 }
 
@@ -205,7 +184,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
 
 include 'inc/header.php';
 include 'inc/navbar.php';
-dump($_POST);
 ?>
 
 
@@ -244,7 +222,10 @@ dump($_POST);
           echo '<td>' . $salle['id_salle'] . '</td>';
           echo '<td>' . $salle['titre'] . '</td>';
           echo '<td>' . $salle['description'] . '</td>';
-          echo '<td><img src="img/' . $salle['photo'] . '" width="100px";> </td>';
+          echo '<td>';
+          echo '<a href="img/' . $salle['photo'] . '" target="_blank">';
+          echo '<img src="img/' . $salle['photo'] . '" width="100px";>';
+          echo '</a></td>';
           echo '<td>' . $salle['pays'] . '</td>';
           echo '<td>' . $salle['ville'] . '</td>';
           echo '<td>' . $salle['adresse'] . '</td>';
