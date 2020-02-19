@@ -148,7 +148,8 @@ include 'inc/navbar.php';
   <!-- /.container -->
 
 <?php
-
+include "ajax_connexion.php";
+include "inc/footer_script.php";
 include "inc/footer.php";
 ?>
 <script>

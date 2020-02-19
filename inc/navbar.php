@@ -20,6 +20,11 @@
           <li class="nav-item">
             <a class="nav-link" href="connexion.php">Connexion</a>
           </li>
+          <li>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#connexion">
+              Connexion
+            </button>
+          </li>
 
         <?php } else { ?>
 

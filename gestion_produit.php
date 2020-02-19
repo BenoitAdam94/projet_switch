@@ -73,14 +73,14 @@ if (
 
     if (!empty($id_produit)) {
       // si id_produit existe un UPDATE
-      js('if id_membre UPDATE');
+      js('if id_produit UPDATE');
 
       $enregistrement = $pdo->prepare("UPDATE produit SET id_salle = :id_salle, date_arrivee = :date_arrivee, date_depart = :date_depart, prix = :prix WHERE id_produit = :id_produit");
 
       $enregistrement->bindParam(":id_produit", $id_produit, PDO::PARAM_STR);
     } else {
       // sinon un INSERT
-      js('if empty msg ELSE insert');
+      js('ELSE insert');
 
       $enregistrement = $pdo->prepare("INSERT INTO produit (id_produit, id_salle, date_arrivee, date_depart, prix)
                                          VALUES (NULL, :id_salle, :date_arrivee, :date_depart, :prix)");
@@ -291,7 +291,7 @@ include 'inc/navbar.php';
 <!-- /.container -->
 
 <?php
-
+include "inc/footer_script.php";
 include "inc/footer.php";
 ?>
 <script>

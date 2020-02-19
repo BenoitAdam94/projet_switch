@@ -318,6 +318,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'newpassword' && !empty($_GET['
 }
 
 
-
+include "inc/footer_script.php";
 include "inc/footer.php";
 ?>

@@ -23,6 +23,6 @@ include 'inc/navbar.php';
   <!-- /.container -->
 
 <?php
-
+include "inc/footer_script.php";
 include "inc/footer.php";
 ?>

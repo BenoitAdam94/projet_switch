@@ -1,26 +1,10 @@
 <?php
-$debug = 0;
-include 'inc/tools.php';
-include 'inc/init.inc.php';
-include 'inc/fonction.inc.php';
 
-
-
-// déconnexion
-if (isset($_GET['action']) && $_GET['action'] == 'deconnexion') {
-  session_destroy(); // on détruit la session pour provoquer la déconnexion.
-}
-
-
-// si l'utilisateur est connecté, on le renvoie sur la page profil
-if (user_is_connect()) {
-  header('location:profil.php');
-}
 
 $pseudo = '';
+
 // est ce que le formulaire a été validé
 if (isset($_POST['pseudo']) && isset($_POST['mdp'])) {
-  
   $pseudo = trim($_POST['pseudo']);
   $mdp = trim($_POST['mdp']);
 
@@ -48,14 +32,6 @@ if (isset($_POST['pseudo']) && isset($_POST['mdp'])) {
       $_SESSION['membre']['email'] = $infos['email'];
       $_SESSION['membre']['statut'] = $infos['statut'];
 
-      // avec un foreach()
-      /*
-			foreach($infos AS $indice => $valeur) {
-				if($indice != 'mdp') {
-					$_SESSION['membre'][$indice] = $valeur;
-				}				
-			}*/
-
       // maintenant que l'utilisateur est connecté, on le redirige vers profil.php
       header('location:profil.php');
       // header('location:...) doit être exécuté AVANT le moindre affichage dans la page sinon => bug
@@ -69,41 +45,41 @@ if (isset($_POST['pseudo']) && isset($_POST['mdp'])) {
   }
 }
 
-
-
-dump($_SESSION);
-
-
-include 'inc/header.php';
-include 'inc/navbar.php';
 ?>
 
 
-<!-- Page Content -->
-<div class="container">
-  <!-- 1 rst row -->
-  <?= $msg; ?>
-  <div class="row">
-    <form method="post" action="">
-      <div class="form-group">
-        <label for="pseudo">Pseudo</label>
-        <input type="text" name="pseudo" id="pseudo" value="<?php echo $pseudo; ?>" class="form-control">
+
+
+
+<div class="modal fade" id="connexion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Connexion</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      <div class="form-group">
-        <label for="mdp">Mot de passe</label>
-        <input type="text" autocomplete="off" name="mdp" id="mdp" value="" class="form-control">
+      <div class="modal-body">
+        <form method="post" action="" id="form_connexion">
+          <div class="form-group">
+            <label>Pseudo</label>
+            <input type="text" name="pseudo" value="" id="pseudo" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Mot de passe</label>
+            <input type="text" name="mdp" value="" id="mdp" class="form-control">
+          </div>
+          <div class="form-group">
+
+            <input type="submit" name="connexion" value="Connexion" id="connexion" class="form-control btn btn-primary">
+          </div>
+
+          <hr>
+          <div id="resultat"></div>
+        </form>
+        <p><?= $msg; ?></p>
       </div>
-      <div class="form-group">
-        <button type="submit" name="connexion" id="connexion" class="form-control btn btn-outline-success"> Connexion </button>
-      </div>
-    </form>
+    </div>
   </div>
-  <!-- /.row -->
-
 </div>
-<!-- /.container -->
-
-<?php
-
-include "inc/footer.php";
-?>
