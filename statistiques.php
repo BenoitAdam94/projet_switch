@@ -11,11 +11,11 @@ if (!user_is_admin()) {
 }
 
 $liste_top_note = $pdo->query("SELECT titre, ROUND(AVG(note), 1) AS top_note
-                          FROM salle, avis
-                          WHERE salle.id_salle = avis.id_salle
-                          GROUP BY salle.id_salle
-                          ORDER BY top_note DESC
-                          LIMIT 0, 3");
+                              FROM salle, avis
+                              WHERE salle.id_salle = avis.id_salle
+                              GROUP BY salle.id_salle
+                              ORDER BY top_note DESC
+                              LIMIT 0, 3");
 
 $liste_top_commande = $pdo->query("SELECT titre, COUNT(id_commande) AS top_commande
                               FROM salle, produit, commande
@@ -23,9 +23,22 @@ $liste_top_commande = $pdo->query("SELECT titre, COUNT(id_commande) AS top_comma
                               AND produit.id_produit = commande.id_produit
                               GROUP BY salle.id_salle
                               ORDER BY top_commande DESC
-                              LIMIT 0, 3;");
+                              LIMIT 0, 3");
+                            
+$liste_top_achat = $pdo->query("SELECT pseudo, COUNT(id_commande) AS top_achat
+                              FROM membre, commande
+                              WHERE membre.id_membre = commande.id_membre
+                              GROUP BY membre.id_membre
+                              ORDER BY top_achat DESC
+                              LIMIT 0, 3");
 
-
+$liste_top_depense = $pdo->query("SELECT pseudo, SUM(prix) AS top_depense
+                              FROM membre, commande, produit
+                              WHERE membre.id_membre = commande.id_membre
+                              AND commande.id_produit = produit.id_produit
+                              GROUP BY membre.id_membre
+                              ORDER BY top_depense DESC
+                              LIMIT 0, 3");
 
 include 'inc/header.php';
 include 'inc/navbar.php';
@@ -59,46 +72,46 @@ include 'inc/navbar.php';
     <div class="col-sm-6">
       <h2>Salles les plus commandées :</h2>
       <table>
-        <tr>
-          <td>Cezanne</td>
-          <td>28</td>
-        </tr>
-        <tr>
-          <td>Cezanne</td>
-          <td>28</td>
-        </tr>
-        <tr>
-          <td>Cezanne</td>
-          <td>28</td>
-        </tr>
-        <tr>
-          <td>Cezanne</td>
-          <td>28</td>
-        </tr>
-        <tr>
-          <td>Cezanne</td>
-          <td>28</td>
-        </tr>
+        <?php
+        while ($top_commande = $liste_top_commande->fetch(PDO::FETCH_ASSOC)) {
+        echo '<tr>';
+        echo '<td>' . $top_commande['titre'] . '</td>';
+        echo '<td>' . $top_commande['top_commande'] . '</td>';
+        echo '</tr>';
+        }
+        ?>
       </table>
 
     </div>
     <div class="col-sm-6">
       <h2>Membres qui achétent le plus :</h2>
       <table>
-        <tr>
-          <td>Arnold</td>
-          <td>28 commandes</td>
-        </tr>
+        <?php
+        while ($top_achat = $liste_top_achat->fetch(PDO::FETCH_ASSOC)) {
+        echo '<tr>';
+        echo '<td>' . $top_achat['pseudo'] . '</td>';
+        echo '<td>' . $top_achat['top_achat'] . '</td>';
+        echo '</tr>';
+        }
+        ?>
       </table>
 
     </div>
     <div class="col-sm-6">
       <h2>Membres qui dépensent le plus :</h2>
       <table>
-        <tr>
-          <td>Arnold</td>
-          <td>7777 €</td>
-        </tr>
+        <?php
+        foreach($top_depense = $liste_top_depense->fetchAll(PDO::FETCH_ASSOC) AS $ind => $val) {
+
+        $ind = $ind + 1;
+
+        echo '<tr>';
+        echo '<td>' . $ind . ' - ' . $val['pseudo']  . '</td>';
+        echo '<td>' . $val['top_depense'] . ' € </td>';
+        echo '</tr>';
+        
+        }
+        ?>
       </table>
 
     </div>
