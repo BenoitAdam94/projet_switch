@@ -47,7 +47,7 @@ document.getElementById("form_connexion").addEventListener('submit', function (e
                 setTimeout(function(){
                     $('#connexion').modal('hide');
                    window.location.reload();
-                }, 1500);
+                }, 1000);
                 // window.location.reload(); 
                 // window.location.refresh(); /!\ renvoie le POST
                 }

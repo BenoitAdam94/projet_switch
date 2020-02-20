@@ -8,27 +8,26 @@ include 'inc/fonction.inc.php';
 // Categorie = Bureau / Formation / Réunion
 
 
+// déconnexion
+if (isset($_GET['action']) && $_GET['action'] == 'deconnexion') {
+  session_destroy(); // on détruit la session pour provoquer la déconnexion.
+  header('location:index.php');
+}
+
+
 
 
 // ****************************************************************
 // Definition des valeurs par défaut pour les Slider-Range jQuery
 // ****************************************************************
 
-if (empty($price_min)) {
-  $price_min = '0';
-}
 
-if (empty($price_max)) {
-  $price_max = '1500';
-}
-
-if (empty($capacite_min)) {
-  $capacite_min = '0';
-}
-
-if (empty($capacite_max)) {
-  $capacite_max = '40';
-}
+$price_min = '0';
+$price_max = '1500';
+$capacite_min = '0';
+$capacite_max = '40';
+$date_debut_min = '';
+$date_debut_max = '';
 
 
 // ********
@@ -38,34 +37,43 @@ if (empty($capacite_max)) {
 if (
   isset($_GET['categorie']) &&
   isset($_GET['pays']) &&
-  isset($_GET['capacitemin']) &&
-  isset($_GET['capacitemax']) &&
-  isset($_GET['pricemin']) &&
-  isset($_GET['pricemax'])
+  isset($_GET['capacite_min']) &&
+  isset($_GET['capacite_max']) &&
+  isset($_GET['price_min']) &&
+  isset($_GET['price_max']) &&
+  isset($_GET['date_debut_min']) &&
+  isset($_GET['date_debut_max'])
 ) {
 
   $categorie = $_GET['categorie'];
   $pays = $_GET['pays'];
-  $capacite_min = &$_GET['capacitemin'];
-  $capacite_max = &$_GET['capacitemax'];
-  $price_min = $_GET['pricemin'];
-  $price_max = $_GET['pricemax'];
+  $capacite_min = $_GET['capacite_min'];
+  $capacite_max = $_GET['capacite_max'];
+  $price_min = $_GET['price_min'];
+  $price_max = $_GET['price_max'];
+  $date_debut_min = $_GET['date_debut_min'];
+  $date_debut_max = $_GET['date_debut_max'];
+  
 
   $liste_produit = $pdo->prepare("SELECT * FROM produit, salle
                                     WHERE produit.id_salle = salle.id_salle
                                     AND categorie = :categorie
                                     AND pays = :pays
-                                    AND capacite > :capacitemin
-                                    AND capacite < :capacitemax
-                                    AND prix > :pricemin
-                                    AND prix < :pricemax
+                                    AND capacite > :capacite_min
+                                    AND capacite < :capacite_max
+                                    AND prix > :price_min
+                                    AND prix < :price_max
+                                    AND date_arrivee > :date_debut_min
+                                    AND date_arrivee < :date_debut_max
                                     ORDER BY date_arrivee");
   $liste_produit->bindParam(':categorie', $categorie, PDO::PARAM_STR);
   $liste_produit->bindParam(':pays', $pays, PDO::PARAM_STR);
-  $liste_produit->bindParam(':capacitemin', $capacite_min, PDO::PARAM_STR);
-  $liste_produit->bindParam(':capacitemax', $capacite_max, PDO::PARAM_STR);
-  $liste_produit->bindParam(':pricemin', $price_min, PDO::PARAM_STR);
-  $liste_produit->bindParam(':pricemax', $price_max, PDO::PARAM_STR);
+  $liste_produit->bindParam(':capacite_min', $capacite_min, PDO::PARAM_STR);
+  $liste_produit->bindParam(':capacite_max', $capacite_max, PDO::PARAM_STR);
+  $liste_produit->bindParam(':price_min', $price_min, PDO::PARAM_STR);
+  $liste_produit->bindParam(':price_max', $price_max, PDO::PARAM_STR);
+  $liste_produit->bindParam(':date_debut_min', $date_debut_min, PDO::PARAM_STR);
+  $liste_produit->bindParam(':date_debut_max', $date_debut_max, PDO::PARAM_STR);
   $liste_produit->execute();
 } else {
 
@@ -104,7 +112,7 @@ include 'inc/navbar.php';
                                       if (!empty($_GET['categorie']) && ($_GET['categorie'] == 'formation')) {
                                         echo 'selected ';
                                       }
-                                      ?>>formation</option>
+                                      ?>>Formation</option>
             <option value="bureau" <?php
                                     if (!empty($_GET['categorie']) && ($_GET['categorie'] == 'bureau')) {
                                       echo 'selected ';
@@ -144,8 +152,8 @@ include 'inc/navbar.php';
         <input type="text" id="amount-capacite" readonly style="border:0; color:#f6931f; font-weight:bold;">
 
         <div id="slider-range-capacite"></div>
-        <input id="capacitemin" name="capacitemin" type="hidden" value="<?= $capacite_min; ?>">
-        <input id="capacitemax" name="capacitemax" type="hidden" value="<?= $capacite_max; ?>">
+        <input id="capacite_min" name="capacite_min" type="hidden" value="<?= $capacite_min; ?>">
+        <input id="capacite_max" name="capacite_max" type="hidden" value="<?= $capacite_max; ?>">
 
 
         <!-- Prix -->
@@ -156,16 +164,19 @@ include 'inc/navbar.php';
           <input type="text" id="amount-prix" readonly style="border:0; color:#f6931f; font-weight:bold;">
 
           <div id="slider-range-prix"></div>
-          <input id="pricemin" name="pricemin" type="hidden" value="<?= $price_min; ?>">
-          <input id="pricemax" name="pricemax" type="hidden" value="<?= $price_max; ?>">
+          <input id="price_min" name="price_min" type="hidden" value="<?= $price_min; ?>">
+          <input id="price_max" name="price_max" type="hidden" value="<?= $price_max; ?>">
         </div>
 
 
         <!-- Période -->
 
         <div>
-          <h3 class="my-4 border">Période</h3>
-
+          <h3 class="my-4 border">Date de début de location</h3>
+          <label for="date_debut_min">Entre le</label>
+          <input type="text" class="form-control" id="date_debut_min" name="date_debut_min" value="<?= $date_debut_min; ?>" required>
+          <label for="date_debut_max">et le</label>
+          <input type="text" class="form-control" id="date_debut_max" name="date_debut_max" value="<?= $date_debut_max; ?>" required>
         </div>
 
 
@@ -244,7 +255,6 @@ include 'inc/navbar.php';
 <!-- /.container -->
 
 <?php
-include "ajax_connexion.php";
 include "inc/footer_script.php";
 include "inc/footer.php";
 ?>
@@ -257,8 +267,8 @@ include "inc/footer.php";
       values: [<?= $price_min; ?>, <?= $price_max; ?>],
       slide: function(event, ui) {
         $("#amount-prix").val("€" + ui.values[0] + " - €" + ui.values[1]);
-        $("#pricemin").val(ui.values[0]);
-        $("#pricemax").val(ui.values[1]);
+        $("#price_min").val(ui.values[0]);
+        $("#price_max").val(ui.values[1]);
       }
     });
     $("#amount-prix").val("€" + $("#slider-range-prix").slider("values", 0) + " - €" + $("#slider-range-prix").slider("values", 1));
@@ -271,10 +281,19 @@ include "inc/footer.php";
       values: [<?= $capacite_min; ?>, <?= $capacite_max; ?>],
       slide: function(event, ui) {
         $("#amount-capacite").val(ui.values[0] + " - " + ui.values[1]);
-        $("#capacitemin").val(ui.values[0]);
-        $("#capacitemax").val(ui.values[1]);
+        $("#capacite_min").val(ui.values[0]);
+        $("#capacite_max").val(ui.values[1]);
       }
     });
     $("#amount-capacite").val($("#slider-range-capacite").slider("values", 0) + " - " + $("#slider-range-capacite").slider("values", 1));
+  });
+  $(function() {
+    $("#date_debut_min").datepicker({
+      dateFormat: "yy-mm-dd 09:00:00"
+    });
+    $("#date_debut_max").datepicker({
+      dateFormat: "yy-mm-dd 19:00:00"
+    });
+
   });
 </script>

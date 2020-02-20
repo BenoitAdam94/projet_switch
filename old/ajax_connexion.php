@@ -2,6 +2,7 @@
 
 
 $pseudo = '';
+$msg = '';
 
 // est ce que le formulaire a été validé
 if (isset($_POST['pseudo']) && isset($_POST['mdp'])) {
@@ -38,10 +39,10 @@ if (isset($_POST['pseudo']) && isset($_POST['mdp'])) {
 
 
     } else {
-      $msg .= '<div class="alert alert-danger mt-3">Erreur sur le pseudo et / ou le mot de passe !</div>';
+      $msg .= '<div class="alert alert-danger mt-3">Mauvais mot de passe</div>';
     }
   } else {
-    $msg .= '<div class="alert alert-danger mt-3">Erreur sur le pseudo et / ou le mot de passe !</div>';
+    $msg .= '<div class="alert alert-danger mt-3">Ce pseudo n\'existe pas</div>';
   }
 }
 

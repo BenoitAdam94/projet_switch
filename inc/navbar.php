@@ -17,9 +17,6 @@
           <li class="nav-item">
             <a class="nav-link" href="inscription.php">Inscription</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="connexion.php">Connexion</a>
-          </li>
           <li>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#connexion">
               Connexion
@@ -32,7 +29,7 @@
             <a class="nav-link" href="profil.php">Profil</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="connexion.php?action=deconnexion">Déconnexion</a>
+            <a class="nav-link" href="index.php?action=deconnexion">Déconnexion</a>
           </li>
 
         <?php } ?>
@@ -58,3 +55,40 @@
     </div>
   </div>
 </nav>
+
+
+
+
+
+<div class="modal fade" id="connexion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Connexion</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="" id="form_connexion">
+          <div class="form-group">
+            <label>Pseudo</label>
+            <input type="text" name="pseudo" value="" id="pseudo" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Mot de passe</label>
+            <input type="text" name="mdp" value="" id="mdp" class="form-control">
+          </div>
+          <div class="form-group">
+
+            <input type="submit" name="connexion" value="Connexion" id="connexion" class="form-control btn btn-primary">
+          </div>
+
+          <hr>
+          <div id="resultat"></div>
+        </form>
+        <p><?= $msg; ?></p>
+      </div>
+    </div>
+  </div>
+</div>

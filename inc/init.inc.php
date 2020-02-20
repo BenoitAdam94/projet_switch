@@ -24,8 +24,6 @@ define('SERVER_ROOT', $_SERVER['DOCUMENT_ROOT']);
 // Chemin racine du dossier du site depuis le serveur
 define('SITE_ROOT', '/projet_switch/');
 
-js('init_ok');
-
 
 
 

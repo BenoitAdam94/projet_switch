@@ -10,27 +10,6 @@ if (!user_is_admin()) {
   exit(); // bloque l'exécution du code 
 }
 
-//*********************************************************************
-//*********************************************************************
-// SUPPRESSION D'UN PRODUIT
-//*********************************************************************
-//*********************************************************************
-if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id_produit'])) {
-
-  $pdo->query("SET FOREIGN_KEY_CHECKS=0");
-
-
-
-  $suppression = $pdo->prepare("DELETE FROM produit WHERE id_produit = :id_produit");
-  $suppression->bindParam(":id_produit", $_GET['id_produit'], PDO::PARAM_STR);
-  $suppression->execute();
-
-  $pdo->query("SET FOREIGN_KEY_CHECKS=1");
-
-  // $_GET['action'] = 'affichage'; // pour provoquer l'affichage du tableau
-
-}
-
 
 $id_produit = ''; // pour la modification
 $id_salle = "";
@@ -39,6 +18,46 @@ $date_depart = "";
 $prix = "";
 
 $msg = '';
+
+//*********************************************************************
+//*********************************************************************
+// SUPPRESSION D'UN PRODUIT
+//*********************************************************************
+//*********************************************************************
+if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id_produit'])) {
+
+  
+
+  $interrogation = $pdo->prepare("SELECT COUNT(id_produit) FROM commande WHERE id_produit = :id_produit;");
+  $interrogation->bindParam(":id_produit", $_GET['id_produit'], PDO::PARAM_STR);
+  $interrogation->execute();
+
+  $count_id_produit = $interrogation->fetch(PDO::FETCH_ASSOC);
+
+  $count = $count_id_produit['COUNT(id_produit)'];
+  $count = intval($count);
+  
+  // Si il y a une commande associé à ce produit, on ne peut la supprimer
+  if($count > 0) {
+
+    $msg .= 'Vous ne pouvez supprimer ce produit car il est associé à une commande existante.';
+
+  } else {
+
+  // Sinon suppression
+
+  $suppression = $pdo->prepare("DELETE FROM produit WHERE id_produit = :id_produit");
+  $suppression->bindParam(":id_produit", $_GET['id_produit'], PDO::PARAM_STR);
+  $suppression->execute();
+
+  // $pdo->query("SET FOREIGN_KEY_CHECKS=0");
+  // $pdo->query("SET FOREIGN_KEY_CHECKS=1");
+
+  }
+
+}
+
+
 
 
 
@@ -179,6 +198,7 @@ include 'inc/navbar.php';
           echo '<a title="modifier" ';
           echo 'href="gestion_produit.php?action=modifier&id_produit=' . $produits['id_produit'] . '&id_salle=' . $produits['id_salle'] . '">';
           echo '<i class="fas fa-exchange-alt fa-lg"></i></a> ';
+
           echo '<a title="supprimer" href="gestion_produit.php?action=supprimer&id_produit=' . $produits['id_produit'] . '">';
           echo '<i class="fas fa-trash-alt fa-lg"></i></a>';
 
@@ -241,8 +261,6 @@ include 'inc/navbar.php';
             $liste_salle = $pdo->query("SELECT * FROM salle");
 
             while ($salle = $liste_salle->fetch(PDO::FETCH_ASSOC)) {
-
-
 
               echo '<option ';
               // Option "selected" pour la modification

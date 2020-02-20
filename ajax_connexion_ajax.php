@@ -1,4 +1,7 @@
 <?php
+include 'inc/init.inc.php';
+$debug = 0;
+include 'inc/tools.php';
 
 
 $tab = array();
@@ -32,15 +35,15 @@ if (isset($_POST['pseudo']) && isset($_POST['mdp'])) {
       $_SESSION['membre']['statut'] = $infos['statut'];
 
       $tab['connexion'] = 'ok';
-      header('location:profil.php');
+      $tab['message'] .= 'Connexion ok !';
       
     } else {
       $msg .= '<div class="alert alert-danger mt-3">Erreur sur le pseudo et / ou le mot de passe !</div>';
-      $tab['message'] .= 'Erreur de connection';
+      $tab['message'] .= 'Mot de passe incorrect';
     }
   } else {
     $msg .= '<div class="alert alert-danger mt-3">Erreur sur le pseudo et / ou le mot de passe !</div>';
-    $tab['message'] .= 'Erreur de connection';
+    $tab['message'] .= 'Pseudo Incorrect';
   }
 }
 
