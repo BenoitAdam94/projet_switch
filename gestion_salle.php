@@ -98,13 +98,13 @@ if (
 
     if (!empty($_FILES['photo']['name'])) {
       $nom_photo = verif_photo_pj();
-      
+
       if ($nom_photo === false) {
         $msg .= '<div class="alert alert-danger mt-3">Attention, le format de la photo est invalide, extensions autorisées : jpg, jpeg, png, gif.</div>';
       }
     }
-    
- 
+
+
 
 
     if (empty($msg)) {
@@ -170,7 +170,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
     $adresse = $salle_actuel['adresse'];
     $description = $salle_actuel['description'];
     $photo_actuelle = $salle_actuel['photo'];
-    
   }
 }
 
@@ -261,29 +260,41 @@ include 'inc/navbar.php';
 
 
       <div class="col-6">
+
+        <!-- Affichage id_salle -->
         <input type="hidden" name="id_salle" value="<?= $id_salle; ?>">
+
+        <!-- Titre -->
         <div class="form-group">
           <label for="titre">Titre</label>
           <input type="text" name="titre" id="titre" value="<?= $titre; ?>" class="form-control">
         </div>
+
+        <!-- Description -->
         <div class="form-group">
           <label for="description">Description</label>
           <textarea name="description" id="description" rows="2" class="form-control"><?= $description; ?></textarea>
         </div>
+
+        <!-- Affichage Photo -->
         <?php
         // récupération de la photo de l'article en cas de modification. Pour la consever si l'utilisateur n'en charge pas une nouvelle
         if (!empty($photo_actuelle)) {
-							echo '<div class="form-group text-center">';
-							echo '<label>Photo actuelle</label><hr>';
-							echo '<img src="img/' . $photo_actuelle . '" class="w-25 img-thumbnail" alt="image de l\'article">';
-							echo '<input name="photo_actuelle" value="' . $photo_actuelle . '">';
-							echo '</div>';
-						}
+          echo '<div class="form-group text-center">';
+          echo '<label>Photo actuelle</label><hr>';
+          echo '<img src="img/' . $photo_actuelle . '" class="w-25 img-thumbnail" alt="image de l\'article">';
+          echo '<input name="photo_actuelle" value="' . $photo_actuelle . '">';
+          echo '</div>';
+        }
         ?>
+
+        <!-- Piece Jointe -->
         <div class="form-group">
           <label for="photo">Photo</label>
           <input type="file" name="photo" id="photo" class="form-control">
         </div>
+
+        <!-- Capacité -->
         <div class="from-group">
           <label for="capacite">Capacité</label>
           <select name="capacite" id="capacite" class="form-control">
@@ -294,36 +305,65 @@ include 'inc/navbar.php';
             </script>
           </select>
         </div>
+
+        <!-- Catégorie -->
         <div class="from-group">
           <label for="categorie">Categorie</label>
           <select name="categorie" id="categorie" class="form-control">
-            <option>bureau</option>
-            <option>reunion</option>
-            <option>formation</option>
+            <option value="reunion" <?php
+                                    if (!empty($categorie) && ($categorie == 'reunion')) {
+                                      echo 'selected ';
+                                    }
+                                    ?>>Réunion</option>
+            <option value="formation" <?php
+                                      if (!empty($categorie) && ($categorie == 'formation')) {
+                                        echo 'selected ';
+                                      }
+                                      ?>>Formation</option>
+            <option value="bureau" <?php
+                                    if (!empty($categorie) && ($categorie == 'bureau')) {
+                                      echo 'selected ';
+                                    }
+                                    ?>>Bureau</option>
           </select>
         </div>
       </div>
       <div class="col-6">
+
+        <!-- Pays -->
         <div class="from-group">
           <label for="pays">Pays</label>
           <select name="pays" id="pays" class="form-control">
-            <option value="france">France</option>
-            <option value="corse">Corse</option>
-            <option value="dom">DOM</option>
+            <option value="france" <?php
+                                    if (!empty($pays) && ($pays == 'france')) {
+                                      echo 'selected ';
+                                    }
+                                    ?>>France</option>
+            <option value="corse" <?php
+                                  if (!empty($pays) && ($pays == 'corse')) {
+                                    echo 'selected ';
+                                  }
+                                  ?>>Corse</option>
+            <option value="DOM" <?php
+                                if (!empty($pays) && ($pays == 'DOM')) {
+                                  echo 'selected ';
+                                }
+                                ?>>DOM</option>
           </select>
         </div>
+        <!-- Ville -->
         <div class="from-group">
           <label for="ville">Ville</label>
-          <select name="ville" id="ville" class="form-control">
-            <option value="paris">Paris</option>
-            <option value="lyon">Lyon</option>
-            <option value="marseille">Marseille</option>
-          </select>
+          <input type="text" name="ville" id="ville" value="<?= $ville; ?>" class="form-control">
         </div>
+
+        <!-- Adresse -->
         <div class="from-group">
           <label for="adresse">Adresse</label>
           <textarea name="adresse" id="adresse" rows="2" class="form-control"><?= $adresse; ?></textarea>
         </div>
+
+        <!-- Code Postal -->
         <div class="form-group">
           <label for="cp">Code Postal</label>
           <input type="cp" name="cp" id="cp" value="<?= $cp; ?>" class="form-control">
