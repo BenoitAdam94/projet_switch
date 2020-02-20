@@ -208,6 +208,20 @@ include 'inc/navbar.php';
         // ****************************************************************
         while ($produit = $liste_produit->fetch(PDO::FETCH_ASSOC)) {
 
+
+            // Requete pour la moyenne notes
+            $note_avis = $pdo->prepare("SELECT ROUND(AVG(note), 1) FROM avis WHERE id_salle = :id_salle");
+            $note_avis->bindParam(':id_salle', $produit["id_salle"], PDO::PARAM_STR);
+            $note_avis->execute();
+            // Requête et mise dans un array
+            $note = $note_avis->fetch(PDO::FETCH_ASSOC);
+            // simplification dans une variable simple
+            $note_moyenne = $note['ROUND(AVG(note), 1)'];
+            $note5 = $note_moyenne / 2;
+            $modulo = $note_moyenne % 2;
+            
+            
+
             $produit['titre'] = ucfirst($produit['titre']);
         ?>
 
@@ -216,7 +230,7 @@ include 'inc/navbar.php';
               <a href="fiche_produit.php?id_produit=<?= $produit['id_produit'] ?>"><img class="card-img-top" src="img/<?= $produit['photo'] ?>" alt="<?= $produit['photo'] ?>"></a>
               <div class="card-body">
                 <h4 class="card-title">
-                  <a href="fiche_produit.php?id_produit=<?= $produit['id_produit'] ?>"><?php $produit['titre']; ?></a>
+                  <a href="fiche_produit.php?id_produit=<?= $produit['id_produit'] ?>"><?= $produit['titre']; ?></a>
                   <h6><?php if ($produit['categorie'] === 'reunion') {
                         echo '<i class="fas fa-users"></i> Reunion';
                       } else if ($produit['categorie'] === 'bureau') {
@@ -231,7 +245,22 @@ include 'inc/navbar.php';
                 <p class="card-text"><?= $produit['date_arrivee'] ?></p>
               </div>
               <div class="card-footer">
-                <small class="text-muted">&#9733; avis indisponible</small>
+                <small class="text-muted">
+                  <?php
+                  for($i=1; $i <= $note5; $i++) {
+                  echo '<i class="fas fa-star"></i>';
+                    }
+                  if($modulo >= 1 ) {
+                    echo '<i class="fas fa-star-half-alt"></i>';
+                    for($note5; $note5 < 4; $note5++ ) {
+                      echo '<i class="far fa-star"></i>';
+                    }
+                  } else {
+                    for($note5; $note5 <= 4; $note5++ ) {
+                      echo '<i class="far fa-star"></i>';
+                    }
+                  }
+                  ?> - <?= $note_moyenne?> / 10</small>
 
               </div>
             </div>

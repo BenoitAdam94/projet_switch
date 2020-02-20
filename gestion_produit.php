@@ -26,7 +26,7 @@ $msg = '';
 //*********************************************************************
 if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id_produit'])) {
 
-  
+
 
   $interrogation = $pdo->prepare("SELECT COUNT(id_produit) FROM commande WHERE id_produit = :id_produit;");
   $interrogation->bindParam(":id_produit", $_GET['id_produit'], PDO::PARAM_STR);
@@ -36,25 +36,23 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id
 
   $count = $count_id_produit['COUNT(id_produit)'];
   $count = intval($count);
-  
+
   // Si il y a une commande associé à ce produit, on ne peut la supprimer
-  if($count > 0) {
+  if ($count > 0) {
 
     $msg .= 'Vous ne pouvez supprimer ce produit car il est associé à une commande existante.';
-
   } else {
 
-  // Sinon suppression
+    // Sinon suppression
 
-  $suppression = $pdo->prepare("DELETE FROM produit WHERE id_produit = :id_produit");
-  $suppression->bindParam(":id_produit", $_GET['id_produit'], PDO::PARAM_STR);
-  $suppression->execute();
+    $suppression = $pdo->prepare("DELETE FROM produit WHERE id_produit = :id_produit");
+    $suppression->bindParam(":id_produit", $_GET['id_produit'], PDO::PARAM_STR);
+    $suppression->execute();
 
-  // $pdo->query("SET FOREIGN_KEY_CHECKS=0");
-  // $pdo->query("SET FOREIGN_KEY_CHECKS=1");
+    // $pdo->query("SET FOREIGN_KEY_CHECKS=0");
+    // $pdo->query("SET FOREIGN_KEY_CHECKS=1");
 
   }
-
 }
 
 
@@ -228,15 +226,16 @@ include 'inc/navbar.php';
 
       <div class="col-6">
         <div class="form-group">
-        <label for="id_produit">Produit actuel :</label>
-        <!-- affichage du produit actuel ou de "nouveau produit" si vide -->
-        <?php
-        if(empty($id_produit)) {
-          echo 'Nouveau produit';
-          echo '<input type="hidden" name="id_produit" value="">';
-        } else { ?>
-        <input name="id_produit" value="<?= $id_produit; ?>">
-        <?php } ?>
+          <label for="id_produit">Produit actuel :</label>
+          <!-- affichage du produit actuel ou de "nouveau produit" si vide -->
+          <?php
+          if (empty($id_produit)) { ?>
+            Nouveau produit
+            <input type="hidden" name="id_produit" value="">
+          <?php } else { ?>
+            <input name="id_produit" value="<?= $id_produit; ?>">
+            <p>Modifier ou <a href="gestion_produit.php">Ajouter un nouveau produit</a></p>
+          <?php } ?>
         </div>
 
 

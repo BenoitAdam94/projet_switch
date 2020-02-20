@@ -72,6 +72,7 @@ include 'inc/navbar.php';
           <th>Prix</th>
           <th>date_enregistrement</th>
           <th>Salle</th>
+          <th>Action</th>
           
         </tr>
         <?php
@@ -95,6 +96,13 @@ include 'inc/navbar.php';
           echo '<td>' . $commandes['prix'] . ' € </td>';
           echo '<td>' . $commandes['date_enregistrement'] . '</td>';
           echo '<td>' . $commandes['id_salle'] . ' - ' . $commandes['titre'] . '</td>';
+
+          echo '<td>';
+          echo '<a title="noter la salle" href="avis.php?salle=' . $commandes['id_salle'] . '">';
+          echo '<i class="fas fa-star fa-lg"></i>';
+          echo '</a>';
+          echo '</td>';
+
           echo '</tr>';
         }
         ?>
