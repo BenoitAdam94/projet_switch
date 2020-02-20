@@ -207,6 +207,8 @@ include 'inc/navbar.php';
         // Boucle pour l'affichage des produits
         // ****************************************************************
         while ($produit = $liste_produit->fetch(PDO::FETCH_ASSOC)) {
+
+            $produit['titre'] = ucfirst($produit['titre']);
         ?>
 
           <div class="col-lg-4 col-md-6 mb-4">
@@ -214,7 +216,7 @@ include 'inc/navbar.php';
               <a href="fiche_produit.php?id_produit=<?= $produit['id_produit'] ?>"><img class="card-img-top" src="img/<?= $produit['photo'] ?>" alt="<?= $produit['photo'] ?>"></a>
               <div class="card-body">
                 <h4 class="card-title">
-                  <a href="fiche_produit.php?id_produit=<?= $produit['id_produit'] ?>"><?= $produit['titre'] ?></a>
+                  <a href="fiche_produit.php?id_produit=<?= $produit['id_produit'] ?>"><?php $produit['titre']; ?></a>
                   <h6><?php if ($produit['categorie'] === 'reunion') {
                         echo '<i class="fas fa-users"></i> Reunion';
                       } else if ($produit['categorie'] === 'bureau') {

@@ -188,14 +188,14 @@ include 'inc/navbar.php';
           echo '<td>' . $membre['date_enregistrement'] . '</td>';
           echo '<td>';
           echo '<a title="Modifier" href="gestion_membre.php?action=modifier&id_membre=' . $membre['id_membre'] . '">';
-          echo '<i class="fas fa-exchange-alt fa-2x"></i></a> ';
+          echo '<i class="fas fa-exchange-alt fa-lg"></i></a> ';
 
           echo '<a title="Génerer Mot de passe" ';
           echo 'href="gestion_membre.php?action=newpassword&id_membre=' . $membre['id_membre'] . '&pseudo=' . $membre['pseudo'] . '">';
-          echo '<i class="fas fa-key fa-2x"></i></a> ';
+          echo '<i class="fas fa-key fa-lg"></i></a> ';
 
           echo '<a title="Supprimer" href="gestion_membre.php?action=supprimer&id_membre=' . $membre['id_membre'] . '">';
-          echo '<i class="fas fa-trash-alt fa-2x"></i></a>';
+          echo '<i class="fas fa-trash-alt fa-lg"></i></a>';
           echo '</td>';
           echo '</tr>';
         }

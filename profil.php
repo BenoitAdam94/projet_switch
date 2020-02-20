@@ -61,9 +61,46 @@ include 'inc/navbar.php';
     </div>
 
   </div>
+  <div class="row">
+    <div class="col-12 text-center">
+      <h2>Liste de vos commandes</h2>
 
-</div>
-<!-- /.row -->
+      <table>
+        <tr>
+          <th>Numéro de commande</th>
+          <th>Reference Produit</th>
+          <th>Prix</th>
+          <th>date_enregistrement</th>
+          <th>Salle</th>
+          
+        </tr>
+        <?php
+        
+        $id_membre = $_SESSION['membre']['id_membre'];
+
+
+        $liste_commandes = $pdo->prepare("SELECT * FROM commande, produit, salle
+                                          WHERE commande.id_produit = produit.id_produit
+                                          AND produit.id_salle = salle.id_salle
+                                          AND id_membre = :id_membre");
+        $liste_commandes->bindParam(':id_membre', $id_membre, PDO::PARAM_STR);
+        $liste_commandes->execute();
+
+
+        while ($commandes = $liste_commandes->fetch(PDO::FETCH_ASSOC)) {
+
+          echo '<tr>';
+          echo '<td>' . $commandes['id_commande'] . '</td>';
+          echo '<td>' . $commandes['id_produit'] . '</td>';
+          echo '<td>' . $commandes['prix'] . ' € </td>';
+          echo '<td>' . $commandes['date_enregistrement'] . '</td>';
+          echo '<td>' . $commandes['id_salle'] . ' - ' . $commandes['titre'] . '</td>';
+          echo '</tr>';
+        }
+        ?>
+      </table>
+    </div>
+  </div>
 
 </div>
 <!-- /.container -->
