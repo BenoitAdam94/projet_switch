@@ -82,8 +82,6 @@ if (
 
 
 
-
-
 include 'inc/header.php';
 include 'inc/navbar.php';
 ?>

@@ -16,6 +16,8 @@ if (!user_is_admin()) {
 // SUPPRESSION D'UN MEMBRE
 //*********************************************************************
 //*********************************************************************
+
+
 if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && !empty($_GET['id_avis'])) {
 	$suppression = $pdo->prepare("DELETE FROM avis WHERE id_avis = :id_avis");
 	$suppression->bindParam(":id_avis", $_GET['id_avis'], PDO::PARAM_STR);
