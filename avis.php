@@ -101,6 +101,7 @@ if ($infos_avis->rowCount() > 0) {
 
   $id_avis = $avis_actuel['id_avis'];
   $note = $avis_actuel['note'];
+  $note = intval($note);
   $commentaire = $avis_actuel['commentaire'];
 }
 
@@ -120,10 +121,11 @@ include 'inc/navbar.php';
   </div>
   <div>
 
-    <form method="post">
+    <form method="post" id="form_avis" action="">
 
       <div class="col-6">
         <p><?= $msg; ?></p>
+
 
         <!-- id_s -->
         <div>
@@ -134,25 +136,25 @@ include 'inc/navbar.php';
         <hr>
 
 
-
         <!-- Note -->
         <div class="form-group">
 
           <label for="note">Votre Note (Note actuelle : <?= $note; ?>)</label>
           <select id="note" name="note" class="form-control" required>
 
+            <?php
+            for ($i = 10; $i > 0; $i--) {
 
-            <script>
-              for (var i = 10; i > 0; i--) {
-                document.write('<option>' + i + '</option>');
+              echo '<option ';
+              if ($i == $note) {
+                echo 'selected ';
               }
-            </script>
+              echo '>' . $i . '</option>';
+            }
+            ?>
 
           </select>
         </div>
-
-
-
 
 
         <!-- Commentaire -->
@@ -164,8 +166,9 @@ include 'inc/navbar.php';
         <div>
           <button class="form-control btn btn-outline-primary" type="submit" class="form-control btn btn-outline-dark">Envoyer</button>
         </div>
-
+        
     </form>
+    
   </div>
 </div>
 <!-- /.row -->

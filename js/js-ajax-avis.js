@@ -1,13 +1,15 @@
-document.getElementById("form_connexion").addEventListener('submit', function (e) {
+console.log('log');
+
+document.getElementById("form_avis").addEventListener('submit', function (e) {
     e.preventDefault(); // On bloque l'evennement
 
-    var cible = "ajax_connexion_ajax.php";
+    var cible = "ajax_avis.php";
     console.log(cible);
     
-    var pseudo = document.getElementById('pseudo').value;
-    var mdp = document.getElementById('mdp').value;
+    var note = document.getElementById('note').value;
+    var commentaire = document.getElementById('commentaire').value;
 
-    var param = 'pseudo=' + pseudo + '&mdp=' + mdp;
+    var param = 'note=' + note + '&commentaire=' + commentaire;
     console.log(param);
 
     // instanciation de l'objet ajax
@@ -28,13 +30,13 @@ document.getElementById("form_connexion").addEventListener('submit', function (e
             var retour = JSON.parse(xhttp.responseText);
             console.log(retour);
 
-            document.getElementById('resultat').innerHTML = retour.message;
+            document.getElementById('resultat_avis').innerHTML = retour.message;
             
             
             
-            if(retour.avis == 'ok') {
+            if(retour.connexion == 'ok') {
                 setTimeout(function(){
-                    $('#modal_avis').modal('hide');
+                    $('form_avis').modal('hide');
                    window.location.reload();
                 }, 1000);
                 // window.location.reload(); 

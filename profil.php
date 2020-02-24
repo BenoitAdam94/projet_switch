@@ -10,6 +10,8 @@ if (!user_is_connect()) {
 }
 
 
+
+
 include 'inc/header.php';
 include 'inc/navbar.php';
 ?>
@@ -73,10 +75,10 @@ include 'inc/navbar.php';
           <th>date_enregistrement</th>
           <th>Salle</th>
           <th>Action</th>
-          
+
         </tr>
         <?php
-        
+
         $id_membre = $_SESSION['membre']['id_membre'];
 
 
@@ -98,7 +100,11 @@ include 'inc/navbar.php';
           echo '<td>' . $commandes['id_salle'] . ' - ' . $commandes['titre'] . '</td>';
 
           echo '<td>';
+          echo '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_avis">
+              Avis
+            </button>';
           echo '<a title="noter la salle" href="avis.php?salle=' . $commandes['id_salle'] . '">';
+
           echo '<i class="fas fa-star fa-lg"></i>';
           echo '</a>';
           echo '</td>';
@@ -113,7 +119,148 @@ include 'inc/navbar.php';
 </div>
 <!-- /.container -->
 
+
 <?php
-include "inc/footer_script.php";
+
+$id_salle = 1;
+$id_membre = $_SESSION['membre']['id_membre'];
+$note = '';
+$commentaire = '';
+
+$date = new DateTime();
+$date_enregistrement = $date->format('Y-m-d H:i:s');
+
+
+
+//*********************************************************************
+//*********************************************************************
+// RECUPERATION : RECUPERATION DU NOM DE LA SALLE
+//*********************************************************************
+//*********************************************************************
+
+$infos_salle = $pdo->prepare("SELECT titre FROM salle WHERE id_salle = :id_salle");
+$infos_salle->bindParam("id_salle", $id_salle, PDO::PARAM_STR);
+$infos_salle->execute();
+
+$salle_actuel = $infos_salle->fetch(PDO::FETCH_ASSOC);
+
+$titre = $salle_actuel['titre'];
+
+
+//*********************************************************************
+//*********************************************************************
+// RECUPERATION : RECUPERATION DE L'AVIS EN BDD
+//*********************************************************************
+//*********************************************************************
+
+
+
+
+
+
+
+$infos_avis = $pdo->prepare("SELECT * FROM avis
+                              WHERE id_salle = :id_salle
+                                AND id_membre = :id_membre");
+$infos_avis->bindparam(":id_salle", $id_salle, PDO::PARAM_STR);
+$infos_avis->bindparam(":id_membre", $id_membre, PDO::PARAM_STR);
+$infos_avis->execute();
+
+// $titre = $avis_actuel['titre'];
+
+
+
+
+
+if ($infos_avis->rowCount() > 0) {
+  $avis_actuel = $infos_avis->fetch(PDO::FETCH_ASSOC);
+
+  $id_avis = $avis_actuel['id_avis'];
+  $note = $avis_actuel['note'];
+  $note = intval($note);
+  $commentaire = $avis_actuel['commentaire'];
+}
+
+?>
+
+
+
+
+
+
+
+
+</div>
+
+<?php
 include "inc/footer.php";
 ?>
+
+<div class="modal fade" id="modal_avis" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Avis</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="post" id="form_avis">
+
+          <div class="col-6">
+            <p><?= $msg; ?></p>
+
+
+            <!-- id_s -->
+            <div>
+              <input type="" name="id_avis" value="<?= $id_avis; ?>">
+              <input type="hidden" name="id_membre" value="<?= $id_membre; ?>">
+              <input type="hidden" name="id_salle" value="<?= $id_salle; ?>">
+            </div>
+            <hr>
+
+
+            <!-- Note -->
+            <div class="form-group">
+
+              <label for="note">Votre Note (Note actuelle : <?= $note; ?>)</label>
+              <select id="note" name="note" class="form-control" required>
+
+                <?php
+                for ($i = 10; $i > 0; $i--) {
+
+                  echo '<option ';
+                  if ($i == $note) {
+                    echo 'selected ';
+                  }
+                  echo '>' . $i . '</option>';
+                }
+                ?>
+
+              </select>
+            </div>
+
+
+            <!-- Commentaire -->
+            <div class="form-group">
+              <label for="commentaire">Commentaire</label>
+              <textarea name="commentaire" id="commentaire" class="form-control"><?= $commentaire; ?></textarea>
+            </div>
+
+            <div>
+              <button class="form-control btn btn-outline-primary" name="avis" type="submit" class="form-control btn btn-outline-dark">Envoyer</button>
+            </div>
+            <hr>
+            <div id="resultat_avis"></div>
+
+        </form>
+
+
+
+        <p><?= $msg; ?></p>
+      </div>
+    </div>
+  </div>
+
+  <?php include "inc/footer_script.php"; ?>

@@ -6,3 +6,4 @@
 <?php if (!user_is_connect()) { ?>
 <script src="js/js-ajax.js"></script>
 <?php } ?>
+<script src="js/js-ajax-avis.js"></script>
