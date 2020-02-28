@@ -113,7 +113,6 @@ if (
         $enregistrement = $pdo->prepare("UPDATE salle SET titre = :titre, description = :description , photo = :photo, pays = :pays, ville = :ville, adresse = :adresse, cp = :cp, capacite = :capacite, categorie = :categorie WHERE id_salle = :id_salle");
 
         $enregistrement->bindParam(":id_salle", $_POST['id_salle'], PDO::PARAM_STR);
-        
       } else {
         // sinon un INSERT
         $enregistrement = $pdo->prepare("INSERT INTO salle (id_salle, titre, description, photo, pays, ville, adresse, cp, capacite, categorie) VALUES (NULL, :titre, :description, :photo, :pays, :ville, :adresse, :cp, :capacite, :categorie)");
@@ -181,6 +180,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'modifier' && !empty($_GET['id_
 //*********************************************************************
 
 
+$capacite = intval($capacite);
+
+
 
 include 'inc/header.php';
 include 'inc/navbar.php';
@@ -245,8 +247,8 @@ include 'inc/navbar.php';
     </div>
 
     <div class="col-12 text-center">
-      <h2>Ajouter une salle</h3>
-        <p class="lead"><?php echo $msg; ?></p>
+      <h2>Ajouter/Modifier une salle</h2>
+      <p class="lead"><?php echo $msg; ?></p>
     </div>
   </div>
 
@@ -264,6 +266,20 @@ include 'inc/navbar.php';
 
         <!-- Affichage id_salle -->
         <input type="hidden" name="id_salle" value="<?= $id_salle; ?>">
+
+
+        <div class="form-group">
+          <label for="id_salle">Salle actuel : <?= $id_salle; ?></label>
+          <!-- affichage du produit actuel ou de "nouveau produit" si vide -->
+          <?php
+          if (empty($id_salle)) { ?>
+            Nouvelle salle
+            <input type="hidden" name="id_salle" value="">
+          <?php } else { ?>
+            <input type="hidden" name="id_salle" value="<?= $id_salle; ?>">
+            <p>Modifier la salle ou <a href="gestion_salle.php">Ajouter une nouvelle salle</a></p>
+          <?php } ?>
+        </div>
 
         <!-- Titre -->
         <div class="form-group">
@@ -301,7 +317,11 @@ include 'inc/navbar.php';
           <select name="capacite" id="capacite" class="form-control">
             <script>
               for (i = 1; i < 51; i++) {
-                document.write('<option value="' + i + '">' + i + '</option>');
+                document.write('<option ');
+                if (i === <?= $capacite; ?>) {
+                  document.write('selected ');
+                }
+                document.write('value="' + i + '">' + i + '</option>');
               }
             </script>
           </select>
