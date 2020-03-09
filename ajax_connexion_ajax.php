@@ -48,3 +48,4 @@ if (isset($_POST['pseudo']) && isset($_POST['mdp'])) {
 }
 
 echo json_encode($tab);
+?>

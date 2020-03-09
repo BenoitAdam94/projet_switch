@@ -1,5 +1,3 @@
-console.log('log');
-
 document.getElementById("form_avis").addEventListener('submit', function (e) {
     e.preventDefault(); // On bloque l'evennement
 

@@ -316,9 +316,12 @@ include 'inc/navbar.php';
           <label for="capacite">Capacité</label>
           <select name="capacite" id="capacite" class="form-control">
             <script>
+              // Faire une boucle pour avoir 50 capacité en <option>
+              // Ceci est le script le plus optimisé (appel une seule fois à la variable PHP "capacite")
+              var capacite = <?= $capacite; ?>;
               for (i = 1; i < 51; i++) {
                 document.write('<option ');
-                if (i === <?= $capacite; ?>) {
+                if (i === capacite) {
                   document.write('selected ');
                 }
                 document.write('value="' + i + '">' + i + '</option>');

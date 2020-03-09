@@ -1,9 +1,9 @@
 document.getElementById("form_connexion").addEventListener('submit', function (e) {
+       
     e.preventDefault(); // On bloque l'evennement
 
     var cible = "ajax_connexion_ajax.php";
-    console.log(cible);
-    
+
     var pseudo = document.getElementById('pseudo').value;
     var mdp = document.getElementById('mdp').value;
 
@@ -16,6 +16,7 @@ document.getElementById("form_connexion").addEventListener('submit', function (e
     } else {
         var xhttp = new ActiveXObject("Microsoft.XMLHTTP"); // pour IE <9
     }
+    
 
     xhttp.open('POST', cible, true);
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -27,16 +28,16 @@ document.getElementById("form_connexion").addEventListener('submit', function (e
 
             var retour = JSON.parse(xhttp.responseText);
             console.log(retour);
-
+            
             document.getElementById('resultat').innerHTML = retour.message;
             
             
             
-            if(retour.avis == 'ok') {
+            if(retour.connexion == 'ok') {
                 setTimeout(function(){
-                    $('#modal_avis').modal('hide');
+                    $('#connexion').modal('hide');
                    window.location.reload();
-                }, 1000);
+                }, 1500);
                 // window.location.reload(); 
                 // window.location.refresh(); /!\ renvoie le POST
                 }
